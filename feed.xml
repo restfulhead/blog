@@ -4,10 +4,10 @@
     <title>Patrick Ruhkopf - Blog</title>
     <description>My thoughts on programming and hopefully some day photography. 
 </description>
-    <link>http://ruhkopf.me/</link>
-    <atom:link href="http://ruhkopf.me/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 28 Nov 2015 19:11:46 +0100</pubDate>
-    <lastBuildDate>Sat, 28 Nov 2015 19:11:46 +0100</lastBuildDate>
+    <link>http://ruhkopf.github.io/blog/</link>
+    <atom:link href="http://ruhkopf.github.io/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 28 Nov 2015 19:23:05 +0100</pubDate>
+    <lastBuildDate>Sat, 28 Nov 2015 19:23:05 +0100</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -56,8 +56,8 @@
 
 </description>
         <pubDate>Tue, 13 Jan 2015 03:14:10 +0100</pubDate>
-        <link>http://ruhkopf.me/inspect-http-requests-httpinspector</link>
-        <guid isPermaLink="true">http://ruhkopf.me/inspect-http-requests-httpinspector</guid>
+        <link>http://ruhkopf.github.io/blog/inspect-http-requests-httpinspector</link>
+        <guid isPermaLink="true">http://ruhkopf.github.io/blog/inspect-http-requests-httpinspector</guid>
         
         
       </item>
