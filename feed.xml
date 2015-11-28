@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Patrick Ruhkopf - Blog</title>
+    <description>My thoughts on programming and hopefully some day photography. 
+</description>
+    <link>http://ruhkopf.me/</link>
+    <atom:link href="http://ruhkopf.me/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 28 Nov 2015 19:11:46 +0100</pubDate>
+    <lastBuildDate>Sat, 28 Nov 2015 19:11:46 +0100</lastBuildDate>
+    <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>Inspect your http requests with httpinspector</title>
+        <description>&lt;p&gt;Last week at our Hackathon I got my hands dirty with &lt;a href=&quot;https://developer.apple.com/swift/&quot;&gt;Swift&lt;/a&gt;. In particular I was using &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/index.html#//apple_ref/occ/clm/NSURLConnection/sendAsynchronousRequest:queue:completionHandler:&quot;&gt;NSURLConnection&lt;/a&gt; to post JSON http requests to a 3rd party web service. The web service wasn’t documented. All I had were a few request examples that I knew were successful before. So I needed my web service client to produce similar http headers and a similar JSON body.&lt;/p&gt;
+
+&lt;p&gt;My first attempts caused the server to return a 500 Internal Server Error. Without any more details to go with, I suspected that maybe some header value or JSON value in my http request was formatted incorrectly. In order to confirm my theory, I needed a way to analyze the http request that my application was producing.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately I wasn’t able to find a way to make NSURLConnection log out the complete request details including headers and payload. My next attempt was to use &lt;a href=&quot;http://www.charlesproxy.com/&quot;&gt;Charles&lt;/a&gt;, which is a Proxy that can be used to debug HTTP traffic. I was able to see all header values, but for some reason the JSON payload (raw body) was empty. After double and triple checking that I was correctly setting the &lt;a href=&quot;https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSMutableURLRequest_Class/index.html#//apple_ref/occ/instp/NSMutableURLRequest/HTTPBody&quot;&gt;HTTPBody of NSMutableURLRequest&lt;/a&gt; in my code and after changing numerous Charles settings, I still wasn’t able to see the actual payload of my request. Not wanting to lose any more time on this (we only had 2 days in total for our Hackathon projects), I decided to write a simple web server that would just print out all http request details.
+&lt;!--more--&gt;
+## Solution&lt;/p&gt;
+
+&lt;p&gt;And that’s how &lt;a href=&quot;https://github.com/ruhkopf/httpinspector&quot;&gt;httpinspector&lt;/a&gt; was born. It’s using &lt;a href=&quot;http://nodejs.org/&quot;&gt;Node.js&lt;/a&gt; and is really as straight-forward as it can be. All it does is print out the http request header values and the raw payload. It’s less than 20 lines of code and to write the script and get it running it probably took me about 15 minutes. Compare that to my previous 45 minutes time wasted on trying to get Charles to output the same.&lt;/p&gt;
+
+&lt;p&gt;Here is an example of the output that httpinspector writes to the console:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;* GET ************************************
+/service/api/users
+{ host: &#39;localhost:5000&#39;,
+  accept: &#39;application/json&#39;,
+  version: &#39;1.0&#39;,
+  &#39;accept-language&#39;: &#39;en-us&#39;,
+  &#39;accept-encoding&#39;: &#39;gzip, deflate&#39;,
+  &#39;content-type&#39;: &#39;application/json; charset=utf-8&#39;,
+  &#39;user-agent&#39;: &#39;myapp/1 CFNetwork/720.1.1 Darwin/14.0.0 (x86_64)&#39;,
+  connection: &#39;keep-alive&#39; }
+
+* POST ************************************
+/service/api/times
+{ host: &#39;localhost:5000&#39;,
+  accept: &#39;application/json&#39;,
+  version: &#39;1.0&#39;,
+  &#39;accept-encoding&#39;: &#39;gzip, deflate&#39;,
+  &#39;accept-language&#39;: &#39;en-us&#39;,
+  &#39;content-type&#39;: &#39;application/json; charset=utf-8&#39;,
+  &#39;content-length&#39;: &#39;152&#39;,
+  &#39;user-agent&#39;: &#39;myapp/1 CFNetwork/720.1.1 Darwin/14.0.0 (x86_64)&#39;,
+  connection: &#39;keep-alive&#39; }
+{&quot;activityId&quot;:&quot;345&quot;,&quot;comment&quot;:&quot;Just a test&quot;,&quot;date&quot;:&quot;20150112&quot;,&quot;projectId&quot;:&quot;USI00028&quot;}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;final-thoughts&quot;&gt;Final thoughts&lt;/h2&gt;
+
+&lt;p&gt;With this I was able to compare the actual request data to the request examples and identify any differences.&lt;/p&gt;
+
+&lt;p&gt;If you’d like to give it a spin, you can find the &lt;a href=&quot;https://github.com/ruhkopf/httpinspector&quot;&gt;code on GitHub&lt;/a&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 13 Jan 2015 03:14:10 +0100</pubDate>
+        <link>http://ruhkopf.me/inspect-http-requests-httpinspector</link>
+        <guid isPermaLink="true">http://ruhkopf.me/inspect-http-requests-httpinspector</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
