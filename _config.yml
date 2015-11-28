@@ -9,8 +9,8 @@
 title: Patrick Ruhkopf - Blog
 description: > # this means to ignore newlines until "baseurl:"
   My thoughts on programming and hopefully some day photography. 
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://ruhkopf.me" # the base hostname & protocol for your site
+baseurl: "/blog" # the subpath of your site, e.g. /blog
+url: "http://ruhkopf.github.io" # the base hostname & protocol for your site
 twitter_username: ruhkopf
 github_username:  ruhkopf
 
