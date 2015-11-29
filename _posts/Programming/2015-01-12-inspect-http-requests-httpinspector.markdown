@@ -1,8 +1,9 @@
 ---
 layout: post
-title:  "Inspect your http requests with httpinspector"
+title: "Inspect your http requests with httpinspector"
 permalink: inspect-http-requests-httpinspector
-date:   2015-01-12 21:14:10 -0500
+date: 2015-01-12 21:14:10 -0500
+tags: analyze, body, debug, hackathon, http, inspect, json, log, node, node.js, payload, request, swift
 excerpt_separator: <!--more-->
 ---
 Last week at our Hackathon I got my hands dirty with [Swift][swift]. In particular I was using [NSURLConnection][nsurlconnection] to post JSON http requests to a 3rd party web service. The web service wasn't documented. All I had were a few request examples that I knew were successful before. So I needed my web service client to produce similar http headers and a similar JSON body.
