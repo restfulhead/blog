@@ -20,75 +20,74 @@ Fortunately, Spring's architects decoupled the Actuator endpoints from the MVC c
 @Component
 public class ActuatorEndpoints
 {
-	@Autowired
-	private HealthEndpoint health;
+  @Autowired
+  private HealthEndpoint health;
 
-	@Autowired
-	private MetricsEndpoint metrics;
-	
-	@Autowired
-	private DumpEndpoint dump;
+  @Autowired
+  private MetricsEndpoint metrics;
+  
+  @Autowired
+  private DumpEndpoint dump;
 
-	
-	@GET
-	@Path("/health")
-	public Object getHealth()
-	{
-		return health.invoke();
-	}
-	
-	@GET
-	@Path("/metrics")
-	public Object getMetrics()
-	{
-		return this.metrics.invoke();
-	}
+  
+  @GET
+  @Path("/health")
+  public Object getHealth()
+  {
+    return health.invoke();
+  }
+  
+  @GET
+  @Path("/metrics")
+  public Object getMetrics()
+  {
+    return this.metrics.invoke();
+  }
 
-	@GET
-	@Path("/metrics/{name:.*}")
-	public Object getMetric(@PathParam("name") final String name)
-	{
-		final Object value = this.metrics.invoke().get(name);
-		if (value == null)
-		{
-			throw new NotFoundException("No such metric: " + name);
-		}
-		return value;
-	}
-	
-	@GET
-	@Path("/dump")
-	@Produces(MediaType.TEXT_PLAIN)
-	public Object getThreadDump()
-	{
-		return new StreamingOutput()
-		{
-			@Override
-			public void write(final OutputStream os) throws IOException, WebApplicationException
-			{
-				final Writer writer = new BufferedWriter(new OutputStreamWriter(os));
-				for (final ThreadInfo thread : dump.invoke())
-				{
-					writer.write(thread.toString());
-				}
+  @GET
+  @Path("/metrics/{name:.*}")
+  public Object getMetric(@PathParam("name") final String name)
+  {
+    final Object value = this.metrics.invoke().get(name);
+    if (value == null)
+    {
+      throw new NotFoundException("No such metric: " + name);
+    }
+    return value;
+  }
+  
+  @GET
+  @Path("/dump")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Object getThreadDump()
+  {
+    return new StreamingOutput()
+    {
+      @Override
+      public void write(final OutputStream os) throws IOException, WebApplicationException
+      {
+        final Writer writer = new BufferedWriter(new OutputStreamWriter(os));
+        for (final ThreadInfo thread : dump.invoke())
+        {
+          writer.write(thread.toString());
+        }
 
-				writer.flush();
-			}
-		};
-	}
-}
-{% endhighlight %}
+        writer.flush();
+      }
+    };
+  }
+}{% endhighlight %}
 
 You can even disable the Spring MVC endpoints by setting a property. If you use the Actuator endpoints as shown above, they will still work.
 
-{% highlight text %}
+{% highlight text linenos %}
 # disable spring mvc endpoints
 endpoints.enabled=false
 {% endhighlight %}
 
 Here's an example output of the health Actuator mapped under *http://localhost:8080/health*.
 
-{% highlight json %}
+{% highlight json linenos %}
 {
   "status": "UP",
   "diskSpace": {

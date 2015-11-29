@@ -17,7 +17,7 @@ Unfortunately I wasn't able to find a way to make NSURLConnection log out the co
 And that's how [httpinspector][httpinspector] was born. It's using [Node.js][nodejs] and is really as straight-forward as it can be. All it does is print out the http request header values and the raw payload. It's less than 20 lines of code and to write the script and get it running it probably took me about 15 minutes. Compare that to my previous 45 minutes time wasted on trying to get Charles to output the same.
 
 Here is an example of the output that httpinspector writes to the console:
-{% highlight text %}
+{% highlight text linenos %}
 * GET ************************************
 /service/api/users
 { host: 'localhost:5000',

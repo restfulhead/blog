@@ -15,7 +15,7 @@ To begin with, check out the [spring-boot-sample-jersey project][spring-boot-sam
 
 To do so, we need to add a dependency to jersey-rx-client-rxjava. This will provide us with an RxJava based implementation of the client. Spring Boot comes with an opinionated dependency management including many well known 3rd party libraries. While the Jersey RxClient extension is not managed by Spring, we can still leverage the Spring managed property "${jersey.version}" to specify the version. Here's what needs to be added to Maven's pom.xml.
 
-{% highlight xml %}
+{% highlight xml linenos %}
 <dependency>
   <groupId>org.glassfish.jersey.ext.rx</groupId>
   <artifactId>jersey-rx-client-rxjava</artifactId>
@@ -25,7 +25,7 @@ To do so, we need to add a dependency to jersey-rx-client-rxjava. This will prov
 
 Next we need to configure our reactive Jersey client. Add the following code to SampleJerseyApplication.java
 
-{% highlight java %}
+{% highlight java linenos %}
 @Bean
 public RxClient<RxObservableInvoker> createHttpClient()
 {
@@ -35,27 +35,27 @@ public RxClient<RxObservableInvoker> createHttpClient()
 
 Now that we have our client configured, let's write a simple hello world test case.
 
-{% highlight java %}
+{% highlight java linenos %}
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleJerseyApplication.class)
 @IntegrationTest("server.port=0")
 @WebAppConfiguration
 public class JerseyClientTests
 {
-	@Value("${local.server.port}")
-	private int port;
+  @Value("${local.server.port}")
+  private int port;
 
-	@Resource
-	private RxClient<RxObservableInvoker> client;
+  @Resource
+  private RxClient<RxObservableInvoker> client;
 
-	@Test
-	public void shouldGetHelloWorld()
-	{
-		final Observable<String> responseMessage = 
-				client.target("http://localhost:" + this.port)
-					.path("/hello").request().rx().get(String.class);
-		assertThat(responseMessage.toBlocking().single(), equalTo("Hello World"));
-	}
+  @Test
+  public void shouldGetHelloWorld()
+  {
+    final Observable<String> responseMessage = 
+        client.target("http://localhost:" + this.port)
+          .path("/hello").request().rx().get(String.class);
+    assertThat(responseMessage.toBlocking().single(), equalTo("Hello World"));
+  }
 }
 {% endhighlight %}
 
@@ -64,7 +64,7 @@ To highlight in the above code is that `.rx()` gives us access to the reactive i
 ## Problem
 In addition to the success test case, we also would like to test server error scenarios. To do so, let's add some code to the Endpoint.class that causes a server error and implement a new test.
 
-{% highlight java %}
+{% highlight java linenos %}
 @GET
 @Path("/serverError")
 public String simulateServerError()
@@ -75,30 +75,30 @@ public String simulateServerError()
 
 The following test method uses the non-reactive interface. It's expecting the client to throw an `InternalServerErrorException`.
 
-{% highlight java %}
+{% highlight java linenos %}
 @Test(expected=InternalServerErrorException.class)
 public void shouldHandleServerError()
 {
-	client.target("http://localhost:" + this.port)
-		.path("hello/serverError").request().get(String.class);
+  client.target("http://localhost:" + this.port)
+    .path("hello/serverError").request().get(String.class);
 }
 {% endhighlight %}
 
 The above test passes. However, things change when using the reactive interface.
 
-{% highlight java %}
+{% highlight java linenos %}
 @Test(expected = InternalServerErrorException.class)
 public void shouldHandleServerErrorRx()
 {
-	client.target("http://localhost:" + this.port)
-		.path("hello/serverError").request().rx().get(String.class)
-		.toBlocking().single();
+  client.target("http://localhost:" + this.port)
+    .path("hello/serverError").request().rx().get(String.class)
+    .toBlocking().single();
 }
 {% endhighlight %}
 
 The above test fails with a message `Expected exception: javax.ws.rs.InternalServerErrorException`. In other words, no exception was thrown. When further inspecting the result of this call, I was surprised to see the server sends a response body as shown here:
 
-{% highlight text %}
+{% highlight text linenos %}
 < 500
 < Connection: close
 < Content-Language: en
@@ -111,7 +111,7 @@ The above test fails with a message `Expected exception: javax.ws.rs.InternalSer
 
 This looks familiar, doesn't it? For some reason when using the RxClient, Tomcat replies with the standard error page. (This also happens by the way if we request and produce application/json; it's not related to the fact that we're requesting plain-text). In a more complex configuration we even saw cases where Tomcat's `StandardHostValve`  was trying to make a request to a non existing error page. Here's an extract from the log.
 
-{% highlight text %}
+{% highlight text linenos %}
 * Server has received a request on thread http-nio-auto-1-exec-1
 > POST http://localhost:51816/testWebResource/serverError
 > content-type: application/json
@@ -139,42 +139,42 @@ However, for applications that only feature web services such as a Microservices
 
 The solution that I choose was simple in the end. We were already using ExceptionMappers to map certain business exceptions to specific web service responses. To avoid using Tomcat's error handling completely, we can just introduce a catch-all exception mapper that catches any exception and translates it to a response.
 
-{% highlight java %}
+{% highlight java linenos %}
 @Provider
 public class CatchAllExcepionMapper implements ExceptionMapper<Throwable>
 {
-	@Override
-	public Response toResponse(final Throwable exception)
-	{
-		final int status;
-		final Map<String, Object> response = new HashMap<>();
+  @Override
+  public Response toResponse(final Throwable exception)
+  {
+    final int status;
+    final Map<String, Object> response = new HashMap<>();
 
-		if (exception instanceof WebApplicationException)
-		{
-			final WebApplicationException webAppException = (WebApplicationException) exception;
-			final Response exceptionResponse = webAppException.getResponse();
-			status = exceptionResponse.getStatus();
-			response.put("status", status);
-			response.put("type", (webAppException instanceof ClientErrorException) ? "client" : "server");
-			response.put("message", exceptionResponse.getStatusInfo().getReasonPhrase());
-		}
-		else
-		{
-			// any other exception
-			status = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-			response.put("status", status);
-			response.put("type", "server");
-			response.put("message", Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
-		}
+    if (exception instanceof WebApplicationException)
+    {
+      final WebApplicationException webAppException = (WebApplicationException) exception;
+      final Response exceptionResponse = webAppException.getResponse();
+      status = exceptionResponse.getStatus();
+      response.put("status", status);
+      response.put("type", (webAppException instanceof ClientErrorException) ? "client" : "server");
+      response.put("message", exceptionResponse.getStatusInfo().getReasonPhrase());
+    }
+    else
+    {
+      // any other exception
+      status = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+      response.put("status", status);
+      response.put("type", "server");
+      response.put("message", Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
+    }
 
-		return Response.status(status).entity(response).type("application/json").build();
-	}
+    return Response.status(status).entity(response).type("application/json").build();
+  }
 }
 {% endhighlight %}
 
 The mapper will catch all Throwables and translate them to a 500 Server Error response with a JSON body. In case of a WebApplicationException we can make use of its attributes, such as the status and the type (client or server). Here's a sample output:
 
-{% highlight text %}
+{% highlight text linenos %}
 < 500
 < Content-Type: application/json
 < {"type":"server","message":"Internal Server Error","status":500}
