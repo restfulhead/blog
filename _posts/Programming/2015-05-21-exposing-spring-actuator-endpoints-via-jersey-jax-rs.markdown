@@ -3,7 +3,7 @@ layout: post
 title: "Exposing Spring Actuator endpoints via Jersey"
 permalink: exposing-spring-actuator-endpoints-via-jersey-jax-rs
 date: 2015-05-21 19:17:44 -0500
-tags: actuator, health, jax-rs, jersey, metrics, monitoring, rest, spring, spring boot, thread dump, web service
+tags: [actuator, health, jax-rs, jersey, metrics, monitoring, rest, spring, spring boot, thread dump, web service]
 excerpt_separator: <!--more-->
 ---
 > Transparency makes the difference between a system that improves over time in production and one that stagnates on decays.<sup>[1]</sup>

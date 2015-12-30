@@ -3,7 +3,7 @@ layout: post
 title: "Catch-all error handling for web services with RxClient and Spring Boot"
 permalink: catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot
 date: 2015-04-12 12:58:10 -0500
-tags: error handler, exception mapper, jersey, reactive, rest, rxclient, rxjava, spring boot
+tags: [error handler, exception mapper, jersey, reactive, rest, rxclient, rxjava, spring boot]
 excerpt_separator: <!--more-->
 ---
 One of Spring Boot's many [sample projects][spring-boot-samples] demonstrates how to configure Spring with [Jersey][jersey]. We're using the JAX-RS API a lot in projects for developing of RESTful web services. It was designed for this specific task from the beginning, rather than retrofitted like Spring MVC was. Jersey also offers a [reactive client API][rxclient] which supports a reactive programming model.
