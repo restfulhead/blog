@@ -58,7 +58,7 @@
 
   <header class="post-header">
     <h1 class="post-title" itemprop="name headline">Inspect your http requests with httpinspector</h1>
-    <p class="post-meta"><time datetime="2015-01-13T03:14:10+01:00" itemprop="datePublished">Jan 13, 2015</time></p>
+    <p class="post-meta"><time datetime="2015-01-12T21:14:10-05:00" itemprop="datePublished">Jan 12, 2015</time></p>
   </header>
 
   <div class="post-content" itemprop="articleBody">
@@ -74,7 +74,29 @@
 
 <p>Here is an example of the output that httpinspector writes to the console:</p>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">* GET ************************************
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></td><td class="code"><pre>* GET ************************************
 /service/api/users
 { host: 'localhost:5000',
   accept: 'application/json',
@@ -96,7 +118,8 @@
   'content-length': '152',
   'user-agent': 'myapp/1 CFNetwork/720.1.1 Darwin/14.0.0 (x86_64)',
   connection: 'keep-alive' }
-{"activityId":"345","comment":"Just a test","date":"20150112","projectId":"USI00028"}</code></pre></figure>
+{"activityId":"345","comment":"Just a test","date":"20150112","projectId":"USI00028"}<span class="w">
+</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <h2 id="final-thoughts">Final thoughts</h2>
 

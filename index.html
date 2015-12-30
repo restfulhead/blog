@@ -62,7 +62,35 @@
   <ul class="post-list">
     
       <li>
-        <span class="post-meta">Jan 13, 2015</span>
+        <span class="post-meta">May 21, 2015</span>
+
+        <h2>
+          <a class="post-link" href="/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs">Exposing Spring Actuator endpoints via Jersey</a>
+        </h2>
+        <blockquote>
+  <p>Transparency makes the difference between a system that improves over time in production and one that stagnates on decays.<sup>[1]</sup></p>
+</blockquote>
+
+<p>Spring Boot comes with a number of <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html">production ready endpoints</a> that expose information about your application’s configuration and health. This insight is vital for monitoring. By default Spring Actuator functionality is accessible via Spring MVC. This is not ideal when you use Jersey (JAX-RS) as your primary web service framework. In fact, if you use Spring Boot’s Jersey Starter sample project, the endpoints don’t even work out of the box (see <a href="https://github.com/spring-projects/spring-boot/issues/2025">Issue #2025</a>). In this post, I’m going to demonstrate how to expose the Actuator endpoints via Jersey.</p>
+
+
+      </li>
+    
+      <li>
+        <span class="post-meta">Apr 12, 2015</span>
+
+        <h2>
+          <a class="post-link" href="/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot">Catch-all error handling for web services with RxClient and Spring Boot</a>
+        </h2>
+        <p>One of Spring Boot’s many <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples">sample projects</a> demonstrates how to configure Spring with <a href="https://jersey.java.net">Jersey</a>. We’re using the JAX-RS API a lot in projects for developing of RESTful web services. It was designed for this specific task from the beginning, rather than retrofitted like Spring MVC was. Jersey also offers a <a href="https://jersey.java.net/documentation/latest/rx-client.html">reactive client API</a> which supports a reactive programming model.</p>
+
+<p>In this post I’m going to show how to use the the reactive Jersey client based on RxJava together with Spring Boot. This post will also address how to handle and communicate server side errors back to the client. Specifically there are some issues I’ve discovered which are related to using the reactive Jersey client together with the embedded Tomcat container.</p>
+
+
+      </li>
+    
+      <li>
+        <span class="post-meta">Jan 12, 2015</span>
 
         <h2>
           <a class="post-link" href="/blog/inspect-http-requests-httpinspector">Inspect your http requests with httpinspector</a>
