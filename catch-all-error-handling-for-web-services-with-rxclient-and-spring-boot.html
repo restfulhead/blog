@@ -65,9 +65,10 @@
     <p>One of Spring Boot’s many <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples">sample projects</a> demonstrates how to configure Spring with <a href="https://jersey.java.net">Jersey</a>. We’re using the JAX-RS API a lot in projects for developing of RESTful web services. It was designed for this specific task from the beginning, rather than retrofitted like Spring MVC was. Jersey also offers a <a href="https://jersey.java.net/documentation/latest/rx-client.html">reactive client API</a> which supports a reactive programming model.</p>
 
 <p>In this post I’m going to show how to use the the reactive Jersey client based on RxJava together with Spring Boot. This post will also address how to handle and communicate server side errors back to the client. Specifically there are some issues I’ve discovered which are related to using the reactive Jersey client together with the embedded Tomcat container.
-<!--more-->
-## Setup
-To begin with, check out the <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-jersey">spring-boot-sample-jersey project</a>. It comes with a setup that deploys Jersey web resources to an embedded Tomcat container. It also demonstrates how to write integration tests using Spring’s RESTTemplate. We would like to change the last part and use the reactive Jersey client instead of the template.</p>
+<!--more--></p>
+
+<h2 id="setup">Setup</h2>
+<p>To begin with, check out the <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-jersey">spring-boot-sample-jersey project</a>. It comes with a setup that deploys Jersey web resources to an embedded Tomcat container. It also demonstrates how to write integration tests using Spring’s RESTTemplate. We would like to change the last part and use the reactive Jersey client instead of the template.</p>
 
 <p>To do so, we need to add a dependency to jersey-rx-client-rxjava. This will provide us with an RxJava based implementation of the client. Spring Boot comes with an opinionated dependency management including many well known 3rd party libraries. While the Jersey RxClient extension is not managed by Spring, we can still leverage the Spring managed property “${jersey.version}” to specify the version. Here’s what needs to be added to Maven’s pom.xml.</p>
 
