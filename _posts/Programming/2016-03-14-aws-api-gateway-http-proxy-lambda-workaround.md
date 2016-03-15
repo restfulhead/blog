@@ -84,8 +84,21 @@ module.exports.handler = function(event, context) {
         console.error(e);
         context.fail(e);
     });
+    
+    if (!isEmpty(event.body)) {
+        req.write(JSON.stringify(event.body));
+    }
 
     req.end();
+}
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true && JSON.stringify(obj) === JSON.stringify({});
 }
 
 {% endhighlight %}
