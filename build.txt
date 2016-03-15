@@ -1,3 +1,11 @@
+Workflow
+* Create a draft (name file without date) in `_drafts` dir
+* Preview with jekyll serve --drafts
+
+To preview
+* jekyll serve
+
+To build
 * `./build.sh` will generate the site into `../ruhkopf-blog-build` 
 * `ruhkopf-blog-build` points to the `gh_pages` branch
 * simply push
