@@ -236,8 +236,8 @@ otherwise spent on implementing this ourselves. Our backend services therefore n
      </span><span class="err">#end</span><span class="w">
    </span><span class="err">}</span><span class="p">,</span><span class="w">
   </span><span class="nt">"pathParams"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-     </span><span class="err">#foreach($paramName</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">$params.get(</span><span class="nt">"header"</span><span class="err">).keySet())</span><span class="w">
-       </span><span class="nt">"$paramName"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"$util.escapeJavaScript($params.get("</span><span class="err">header</span><span class="s2">").get($paramName))"</span><span class="w">
+     </span><span class="err">#foreach($paramName</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">$params.get(</span><span class="nt">"path"</span><span class="err">).keySet())</span><span class="w">
+       </span><span class="nt">"$paramName"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"$util.escapeJavaScript($params.get("</span><span class="err">path</span><span class="s2">").get($paramName))"</span><span class="w">
        </span><span class="err">#if($foreach.hasNext)</span><span class="p">,</span><span class="w">
        </span><span class="err">#end</span><span class="w">
      </span><span class="err">#end</span><span class="w">
