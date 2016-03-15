@@ -10,6 +10,7 @@ One of Spring Boot's many [sample projects][spring-boot-samples] demonstrates ho
 
 In this post I'm going to show how to use the the reactive Jersey client based on RxJava together with Spring Boot. This post will also address how to handle and communicate server side errors back to the client. Specifically there are some issues I've discovered which are related to using the reactive Jersey client together with the embedded Tomcat container.
 <!--more-->
+
 ## Setup
 To begin with, check out the [spring-boot-sample-jersey project][spring-boot-sample-jersey]. It comes with a setup that deploys Jersey web resources to an embedded Tomcat container. It also demonstrates how to write integration tests using Spring's RESTTemplate. We would like to change the last part and use the reactive Jersey client instead of the template.
 
