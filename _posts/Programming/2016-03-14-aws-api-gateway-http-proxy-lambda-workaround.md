@@ -120,8 +120,8 @@ You can access parameters via `$input.params()`. For example you can access head
      #end
    },
   "pathParams" : {
-     #foreach($paramName in $params.get("header").keySet())
-       "$paramName" : "$util.escapeJavaScript($params.get("header").get($paramName))"
+     #foreach($paramName in $params.get("path").keySet())
+       "$paramName" : "$util.escapeJavaScript($params.get("path").get($paramName))"
        #if($foreach.hasNext),
        #end
      #end
