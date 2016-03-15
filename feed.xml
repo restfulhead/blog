@@ -2,13 +2,47 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Patrick Ruhkopf - Blog</title>
-    <description>My thoughts on programming and hopefully some day photography. 
+    <description>My thoughts on programming, application design and (someday) photography. 
 </description>
     <link>http://ruhkopf.name/blog/</link>
     <atom:link href="http://ruhkopf.name/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 29 Dec 2015 19:24:33 -0500</pubDate>
-    <lastBuildDate>Tue, 29 Dec 2015 19:24:33 -0500</lastBuildDate>
-    <generator>Jekyll v3.0.1</generator>
+    <pubDate>Tue, 15 Mar 2016 12:50:07 -0400</pubDate>
+    <lastBuildDate>Tue, 15 Mar 2016 12:50:07 -0400</lastBuildDate>
+    <generator>Jekyll v3.1.2</generator>
+    
+      <item>
+        <title>AWS API gateway as HTTP proxy with Lambda workaround</title>
+        <description>&lt;p&gt;In addition to invoking &lt;a href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-lambda.html&quot;&gt;Lambda functions&lt;/a&gt; and other &lt;a href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html&quot;&gt;AWS services such as S3&lt;/a&gt;, the &lt;a href=&quot;https://aws.amazon.com/api-gateway/&quot;&gt;API Gateway&lt;/a&gt; can also act as a &lt;a href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-mappings.html&quot;&gt;proxy&lt;/a&gt; between the user and your http based service. For example if you already have a service based architecture you could integrate it with the gateway to maintain, monitor and secure a public API for your services. However, Amazon’s priorities seem to be on the former two integration methods, because when it comes to the details the HTTP proxy integration is quite painful at the moment. In this post I will highlight some of the pitfalls and provide workarounds.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 14 Mar 2016 22:14:32 -0400</pubDate>
+        <link>http://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround</link>
+        <guid isPermaLink="true">http://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround</guid>
+        
+        <category>aws</category>
+        
+        <category>api</category>
+        
+        <category>gateway</category>
+        
+        <category>apigateway</category>
+        
+        <category>proxy</category>
+        
+        <category>http</category>
+        
+        <category>lambda</category>
+        
+        <category>mapping</category>
+        
+        <category>template</category>
+        
+        <category>cognito</category>
+        
+        <category>context</category>
+        
+        
+      </item>
     
       <item>
         <title>Exposing Spring Actuator endpoints via Jersey</title>

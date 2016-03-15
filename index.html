@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Patrick Ruhkopf - Blog</title>
-  <meta name="description" content="My thoughts on programming and hopefully some day photography. 
+  <meta name="description" content="My thoughts on programming, application design and (someday) photography. 
 ">
 
   <link rel="stylesheet" href="/blog/css/main.css">
@@ -60,6 +60,17 @@
   <h1 class="page-heading">Posts</h1>
 
   <ul class="post-list">
+    
+      <li>
+        <span class="post-meta">Mar 14, 2016</span>
+
+        <h2>
+          <a class="post-link" href="/blog/aws-api-gateway-http-proxy-lambda-workaround">AWS API gateway as HTTP proxy with Lambda workaround</a>
+        </h2>
+        <p>In addition to invoking <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-lambda.html">Lambda functions</a> and other <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html">AWS services such as S3</a>, the <a href="https://aws.amazon.com/api-gateway/">API Gateway</a> can also act as a <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-mappings.html">proxy</a> between the user and your http based service. For example if you already have a service based architecture you could integrate it with the gateway to maintain, monitor and secure a public API for your services. However, Amazon’s priorities seem to be on the former two integration methods, because when it comes to the details the HTTP proxy integration is quite painful at the moment. In this post I will highlight some of the pitfalls and provide workarounds.</p>
+
+
+      </li>
     
       <li>
         <span class="post-meta">May 21, 2015</span>
@@ -146,7 +157,7 @@
       </div>
 
       <div class="footer-col footer-col-3">
-        <p>My thoughts on programming and hopefully some day photography. 
+        <p>My thoughts on programming, application design and (someday) photography. 
 </p>
       </div>
     </div>

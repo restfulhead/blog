@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>AWS API gateway as HTTP proxy with Lambda workaround</title>
+  <meta name="description" content="In addition to invoking Lambda functions and other AWS services such as S3, the API Gateway can also act as a proxy between the user and your http based serv...">
+
+  <link rel="stylesheet" href="/blog/css/main.css">
+  <link rel="canonical" href="http://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround">
+  <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Patrick Ruhkopf - Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/contact/">Contact</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">AWS API gateway as HTTP proxy with Lambda workaround</h1>
+    <p class="post-meta"><time datetime="2016-03-14T22:14:32-04:00" itemprop="datePublished">Mar 14, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>In addition to invoking <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-lambda.html">Lambda functions</a> and other <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html">AWS services such as S3</a>, the <a href="https://aws.amazon.com/api-gateway/">API Gateway</a> can also act as a <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-mappings.html">proxy</a> between the user and your http based service. For example if you already have a service based architecture you could integrate it with the gateway to maintain, monitor and secure a public API for your services. However, Amazon’s priorities seem to be on the former two integration methods, because when it comes to the details the HTTP proxy integration is quite painful at the moment. In this post I will highlight some of the pitfalls and provide workarounds.
+<!--more--></p>
+
+<p>Defining an API is very easy: You can use the AWS console to click your resources  and methods together, import a <a href="http://swagger.io/">Swagger API</a> definition or use an automation framework such as <a href="https://github.com/serverless/serverless">Serverless</a>. It gets a bit more difficult when it comes to the actual integration with your service or Lambda function. If you go beyond the basic “hello world” examples, then most likely your service or function will be interested in the request context, such as headers, path parameters and information about the user. For this you need to become familiar with the API Gateway’s <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html">request mapping templates</a>.</p>
+
+<p>In our case we are using AWS Cognito to identify users and rely on the gateway for authentication. Ideally this would save us some time and resources
+otherwise spent on implementing this ourselves. Our backend services therefore need the <code class="highlighter-rouge">cognitoIdentityId</code> attribute from the API Gateway’s <code class="highlighter-rouge">$context</code>. My initial assumption was that I could easily forward this attribute as a header parameter, similar to the <code class="highlighter-rouge">Authorization</code> header which is commonly used for basic or token based authentication. However, here comes the first issue.</p>
+
+<p>You can only access <code class="highlighter-rouge">$context</code> in the mapping template for the body of your method. It is currently not possible to access context variables in the mapping for header, query or path parameters. I think this is an indication that the API Gateway was build primarily for Lambda. (Lambda functions have a generic event object, which is used to hold all data.) But what about the Http proxy integration? Sure, we could include the context attributes to the body of every resource. But this requires changing the contract (or data model, if you will) and our internal API would be different from the public API. We could no longer use the same Swagger file to define our API. Even more problematic are <code class="highlighter-rouge">GET</code> calls, which typically do not have a body. So this would mean we would need to violate standards and introduce <code class="highlighter-rouge">POST</code> calls just to satisfy the API gateway.</p>
+
+<p>Hopefully Amazon will address this very soon. The obvious solution would be to support mapping templates also for headers. In the meantime, to continue our development without having to change our API, I have created a generic workaround based on Lambda. The idea is fairly simple: The lambda function takes in the request along with all the relevant context attributes (such as the cognito identity) from the API Gateway. It then invokes our backend service and passes the context attributes as header values. Long story short: We now have an additional proxy. The API Gateway redirects to Lambda which redirects to our backend service. This is of course unfortunate, because it adds latency and complexity and therefore more possibilities for failure. However, it at least solves our immediate problem without requiring our backend services to change. In theory it also gives us an opportunity to add features such as client side load balancing (although we are hoping that this is a feature that the API gateway will provide in future).</p>
+
+<h2 id="aws-lambda-proxy">AWS Lambda proxy</h2>
+<p>The following code snippet shows a basic implementation of a Lambda proxy function. (At the time of writing the Node.js version used for Lambda is a bit outdated and unfortunately does not allow us to use block scoping or other ES6 features without more <a href="http://www.rricard.me/es6/aws/lambda/nodejs/2015/11/29/es6-on-aws-lambda.html">workarounds</a>. :-/).</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</pre></td><td class="code"><pre><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'http'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">APP_PROTOCOL</span> <span class="o">=</span> <span class="s2">"http:"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">APP_HOST</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">APP_PORT</span> <span class="o">=</span> <span class="mi">8080</span><span class="p">;</span>
+
+<span class="c1">// Lambda Handler</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Forwarding request"</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">httpMethod</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">resourcePath</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">requestId</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">pathParams</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">queryParams</span><span class="p">);</span>
+
+    <span class="c1">// store additional gateway data in custom headers</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">[</span><span class="s2">"X-AWS-request-id"</span><span class="p">]</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">requestId</span><span class="p">;</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">[</span><span class="s2">"X-AWS-cognito-pool"</span><span class="p">]</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">cognitoIdentityPoolId</span><span class="p">;</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">[</span><span class="s2">"X-AWS-cognito-id"</span><span class="p">]</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">cognitoIdentityId</span><span class="p">;</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">[</span><span class="s2">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"application/json; charset=utf-8"</span><span class="p">;</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">[</span><span class="s2">"Accept"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"application/json"</span><span class="p">;</span>
+    
+    <span class="c1">// replace any path parameters</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">resourcePath</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">"{"</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">pathParams</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">event</span><span class="p">.</span><span class="nx">resourcePath</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">resourcePath</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s2">"{"</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s2">"}"</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">pathParams</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span> 
+        <span class="p">});</span>
+    <span class="p">}</span>
+        
+    <span class="c1">// create query parameters string</span>
+    <span class="kd">var</span> <span class="nx">queryParams</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">queryParams</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">+</span> <span class="nx">event</span><span class="p">.</span><span class="nx">queryParams</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">queryParamsStr</span> <span class="o">=</span> <span class="s2">"?"</span> <span class="o">+</span> <span class="nx">queryParams</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">method</span><span class="p">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">httpMethod</span><span class="p">,</span>
+        <span class="na">protocol</span><span class="p">:</span> <span class="nx">APP_PROTOCOL</span><span class="p">,</span>
+        <span class="na">hostname</span><span class="p">:</span> <span class="nx">APP_HOST</span><span class="p">,</span>
+        <span class="na">port</span><span class="p">:</span> <span class="nx">APP_PORT</span><span class="p">,</span>
+        <span class="na">headers</span><span class="p">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">headerParams</span><span class="p">,</span>
+        <span class="na">path</span><span class="p">:</span> <span class="nx">event</span><span class="p">.</span><span class="nx">resourcePath</span> <span class="o">+</span> <span class="nx">queryParamsStr</span>
+    <span class="p">};</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Sending request with options"</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">req</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Received response"</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span><span class="p">);</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s1">'utf8'</span><span class="p">);</span>
+        
+        <span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'data'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">body</span> <span class="o">+=</span> <span class="nx">d</span><span class="p">;</span>
+        <span class="p">});</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'end'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">context</span><span class="p">.</span><span class="nx">succeed</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="nx">req</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="nx">req</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+<span class="p">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>Most of it is pretty straight forward. The destination server is hard-coded here, but you could easily make it more dynamic. We simply read the request details from the event object and construct an HTTP call to our destination server. As mentioned in the introduction, this requires defining a mapping template in the API Gateway. This was a bit painful, too, because certain parts of the mapping aren’t quite what one would expect. You might have guessed: It’s again about headers, path and query parameters.</p>
+
+<h2 id="fun-with-mapping-templates">Fun with mapping templates</h2>
+<p>You can access parameters via <code class="highlighter-rouge">$input.params()</code>. For example you can access header attributes directly: <code class="highlighter-rouge">$input.params().header.get('Content-Type’)</code>. However, in our case we just want all headers and forward them to our backend. So a simple <code class="highlighter-rouge">$input.params().header</code> should do, right? Not quite: This gives you back a map, as the documentation says. In Lambda you would end up with a string that looks like a map (<code class="highlighter-rouge"><span class="p">{</span><span class="err">test=val1,</span><span class="w"> </span><span class="err">again=val2</span><span class="p">}</span></code>), which would be very tedious to use. Because there is no escaping and there are no quotes, a simple JSON.parse() won’t work. The solution? Make use of Lambda’s template language (<a href="http://velocity.apache.org/engine/devel/vtl-reference-guide.html">Velocity</a>) to construct the desired object:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="err">#set($params</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">$input.params())</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nt">"requestId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$context.requestId"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"resourcePath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$context.resourcePath"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"httpMethod"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$context.httpMethod"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"cognitoIdentityId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$context.identity.cognitoIdentityId"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"cognitoIdentityPoolId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$context.identity.cognitoIdentityPoolId"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"body"</span><span class="p">:</span><span class="w"> </span><span class="err">$input.json('$')</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"queryParams"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="err">#foreach($paramName</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">$params.get(</span><span class="nt">"querystring"</span><span class="err">).keySet())</span><span class="w">
+        </span><span class="nt">"$paramName"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"$util.escapeJavaScript($params.get("</span><span class="err">querystring</span><span class="s2">").get($paramName))"</span><span class="w">
+        </span><span class="err">#if($foreach.hasNext)</span><span class="p">,</span><span class="w">
+        </span><span class="err">#end</span><span class="w">
+      </span><span class="err">#end</span><span class="w">
+    </span><span class="err">}</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"headerParams"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="err">#foreach($paramName</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">$params.get(</span><span class="nt">"header"</span><span class="err">).keySet())</span><span class="w">
+       </span><span class="nt">"$paramName"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"$util.escapeJavaScript($params.get("</span><span class="err">header</span><span class="s2">").get($paramName))"</span><span class="w">
+       </span><span class="err">#if($foreach.hasNext)</span><span class="p">,</span><span class="w">
+       </span><span class="err">#end</span><span class="w">
+     </span><span class="err">#end</span><span class="w">
+   </span><span class="err">}</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"pathParams"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="err">#foreach($paramName</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">$params.get(</span><span class="nt">"header"</span><span class="err">).keySet())</span><span class="w">
+       </span><span class="nt">"$paramName"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"$util.escapeJavaScript($params.get("</span><span class="err">header</span><span class="s2">").get($paramName))"</span><span class="w">
+       </span><span class="err">#if($foreach.hasNext)</span><span class="p">,</span><span class="w">
+       </span><span class="err">#end</span><span class="w">
+     </span><span class="err">#end</span><span class="w">
+   </span><span class="err">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>While the API Gateway can be used as an Http proxy, there are still some serious shortcomings that need to be addressed with workarounds. It’s understandable that Amazon is pushing for Lambda. However, there is also a big opportunity by integrating existing services, where it’s not feasible to migrate them to Lambda. We hope Amazon will improve the HTTP proxy integration soon, at the very least by allowing to forward context variables as headers.</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Patrick Ruhkopf - Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Patrick Ruhkopf - Blog</li>
+          <li>subscribe <a href="/blog/feed.xml">via RSS</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/ruhkopf"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">ruhkopf</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/ruhkopf"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">ruhkopf</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thoughts on programming, application design and (someday) photography. 
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45866113-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+
+  </body>
+
+</html>
