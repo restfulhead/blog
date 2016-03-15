@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AWS API gateway as HTTP proxy with Lambda workaround"
-date: 2016-03-14 19:17:44 -0500
+date: 2016-03-14 21:14:32 -0500
 permalink: aws-api-gateway-http-proxy-lambda-workaround
 tags: [aws, api, gateway, apigateway, proxy, http, lambda, mapping, template, cognito, context]
 excerpt_separator: <!--more-->
