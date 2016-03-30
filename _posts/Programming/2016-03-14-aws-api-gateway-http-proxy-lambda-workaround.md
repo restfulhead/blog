@@ -76,11 +76,10 @@ module.exports.handler = function(event, context) {
             body += d;
         });
         res.on('end', function() {
-            if (body === '') {
-			    context.succeed();
-            } else {
-                context.succeed(JSON.parse(body));
-            }
+           	context.succeed({
+	            body: body !== '' ? JSON.parse(body) : {},
+	            headers: res.headers
+	          });
         });
     });
 
