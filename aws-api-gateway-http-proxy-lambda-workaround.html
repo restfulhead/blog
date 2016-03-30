@@ -208,7 +208,7 @@ otherwise spent on implementing this ourselves. Our backend services therefore n
             <span class="nx">body</span> <span class="o">+=</span> <span class="nx">d</span><span class="p">;</span>
         <span class="p">});</span>
         <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'end'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="nx">context</span><span class="p">.</span><span class="nx">succeed</span><span class="p">(</span><span class="nx">body</span><span class="p">);</span>
+            <span class="nx">context</span><span class="p">.</span><span class="nx">succeed</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
         <span class="p">});</span>
     <span class="p">});</span>
 
