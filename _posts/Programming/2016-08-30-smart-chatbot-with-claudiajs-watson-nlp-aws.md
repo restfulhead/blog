@@ -2,6 +2,7 @@
 layout: post
 title: "Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS"
 permalink: smart-chatbot-with-claudiajs-watson-nlp-aws
+date: 2016-08-30 19:44:11 -0500
 tags: [chatbot, watson, nlp, machine learning, aws, claudiajs, api, lambda, nodejs, apigateway, api, gateway]
 excerpt_separator: <!--more-->
 ---

@@ -3,14 +3,17 @@ First time install
 * gem install all plugins from _config.yaml
 * image plugin requires ImageMagick, so `brew install ImageMagick` and then `gem install rmagick`
 
-Workflow
+Workflow Current
 * Create a draft (name file without date) in `_drafts` dir
 * Preview with jekyll serve --drafts
+* To publish, manually copy over to _posts dir. Add date to file name and to header.
+** Watch out: Date format in the header is different (day before month) than in the file
+** Watch out again: If you set the date to the future, your post won't show. This can bite you when daylight savings change the hour offset
 
-To preview
-* jekyll serve
-
-To build
+To build and deploy
 * `./build.sh` will generate the site into `../ruhkopf-blog-build` 
 * `ruhkopf-blog-build` points to the `gh_pages` branch
 * simply push
+
+Worflow future
+* Check out https://github.com/jekyll/jekyll-compose
