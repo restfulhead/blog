@@ -18,7 +18,7 @@ twitter_username: ruhkopf
 github_username:  ruhkopf
 
 # Build settings
-markdown: redcarpet
+markdown: kramdown
 
 # Plugins
 gems: [jekyll-picture-tag]
@@ -26,16 +26,36 @@ gems: [jekyll-picture-tag]
 # Picture settings
 picture:
   source: "assets/images/_fullsize"
+  output: "assets/images/generated"
   markup: "picture"
   presets:
-    gallery:
-      ppi: [1, 1.5]
+    default:
+      ppi: [1, 2]
       attr:
-        class: "gallery-pict"
+        class: "picture"
         itemprop: "image"
       source_medium:
         media: "(min-width: 40em)"
         width: "600"
-        height: "300"
       source_default: 
         width: "300"
+    small:
+      ppi: [1, 2]
+      attr:
+        class: "picture-small"
+        itemprop: "image"
+      source_medium:
+        media: "(min-width: 40em)"
+        width: "300"
+      source_default: 
+        width: "150"
+    big:
+      ppi: [1, 2]
+      attr:
+        class: "picture-big"
+        itemprop: "image"
+      source_medium:
+        media: "(min-width: 40em)"
+        width: "740"
+      source_default: 
+        width: "370"
