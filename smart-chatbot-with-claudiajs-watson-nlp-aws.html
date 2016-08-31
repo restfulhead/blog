@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS</title>
+  <meta name="description" content="There are already many examples on how to quickly develop a chatbot with AWS Lambda and API Gateway (see here and here). However, most of them don’t go much ...">
+
+  <link rel="stylesheet" href="/blog/css/main.css">
+  <link rel="canonical" href="http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws">
+  <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+
+  <script src="/blog/js/vendor/picturefill.min.js"></script>
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Patrick Ruhkopf - Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/contact/">Contact</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS</h1>
+    <p class="post-meta"><time datetime="2016-08-30T20:44:11-04:00" itemprop="datePublished">Aug 30, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>There are already many examples on how to quickly develop a chatbot with AWS Lambda and API Gateway (see <a href="https://github.com/claudiajs/example-projects#chat-bots">here</a> and <a href="https://github.com/awslabs/aws-serverless-chatbot-sample">here</a>). However, most of them don’t go much further than replying to a few well defined commands. If you want to compete in the brave new bot world, your bot needs to be more than just a new command line interface. It needs to understand human language (NLP) and it needs to be able to have conversations (state, memory). This post shows how to integrate with Watson Conversation and AWS DynamoDB to give your bot natural language understanding and a memory.
+<!--more--></p>
+
+<h2 id="lets-get-started">Let’s get started</h2>
+<p>We’re going to build a prototype for a bot that manages to-do lists. The bot should be able to understand when the user wants to add something to a list. We further want to differentiate between things to add to the shopping list and things to add to the calendar. A message such as ‘cancel’ or ‘that’s wrong’ should cancel the last action.</p>
+
+<p>This article starts where the ClaudiaJS “Hello World” example left off. If you haven’t done so, head over to their <a href="https://claudiajs.com/tutorials/hello-world-chatbot.html">getting started guide</a> and check out the <a href="https://github.com/claudiajs/example-projects/tree/master/simple-bot">example repository</a>. By now, you should have a very simple chatbot up and running replying with random excuses to your every message.</p>
+
+<h2 id="nlp-and-machine-learning-with-watson-conversation">NLP and machine learning with Watson Conversation</h2>
+<p>The first thing that we want to do is make our bot understand us better. For this, we’re going to integrate with <a href="https://www.ibm.com/watson/developercloud/conversation.html">Watson Conversation</a>. There’s a free developer plan, so you can easily sign up and create your first workspace. After creating a new workspace, you can set up intends, entities and dialogs via <a href="https://www.ibmwatsonconversation.com">the web interface</a> or JSON Api.</p>
+
+<p>Your bot uses intends and examples to figure out the purpose of a user’s message. For our to-do list prototype, I built two intends: <code class="highlighter-rouge">#add-item</code> adds something to a list. <code class="highlighter-rouge">#undo</code> removes the last item from the list. Make sure to fill in a good amount if examples, because this is part of your bots training.</p>
+
+<picture>
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-600by480-1ccb54.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-300by240-1ccb54.png" media="(min-width: 40em)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-300by240-1ccb54.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-150by120-1ccb54.png" />
+    <img src="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-150by120-1ccb54.png" class="picture-small" itemprop="image" alt="Watson intends" />
+  </picture>
+
+<picture>
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-600by480-b4da8c.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-300by240-b4da8c.png" media="(min-width: 40em)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-300by240-b4da8c.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-150by120-b4da8c.png" />
+    <img src="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-150by120-b4da8c.png" class="picture-small" itemprop="image" alt="Watson entities" />
+  </picture>
+
+<p>Finally, the dialog setup helps Watson to understand a typical conversation flow. The <code class="highlighter-rouge">conversation_start</code> node allows us to specify a welcome message. The <code class="highlighter-rouge">#add-item</code> node gets triggered when Watson thinks that the user’s intend is to add an item. If that’s the case, then we let Watson further interpret the user input to either add something to the shopping list, the calendar or a general to-do list. In case the user changed their mind, we add the <code class="highlighter-rouge">#undo</code> node. Finally, when all else fails and Watson can’t interpret the intend, the <code class="highlighter-rouge">Anything else</code> node is invoked.</p>
+
+<picture>
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-1480by838-ff7bd4.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-740by419-ff7bd4.png" media="(min-width: 40em)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-740by419-ff7bd4.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-370by209-ff7bd4.png" />
+    <img src="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-370by209-ff7bd4.png" class="picture-big" itemprop="image" alt="Watson dialog" />
+  </picture>
+
+<p>When you click the little message box in the dialog view, a chat window opens. You can test and train your bot from there and see how Watson identifies your input. If Watson’s interpretation of you message is wrong, you can provide it with the correct intend. This way your bot can learn and improve.</p>
+
+<p>Ok, time to integrate Watson Conversation into our ClaudiaJS based chatbot. You will need to create an API user with a password. (Note that this is not the user you use to log in to Bluemix or the Watson UI, it’s credentials managed under Service Credentials in your Bluemix dashboard). Other than that you also need your workspace ID at hand (you’ll find this for example in the URL of the Watson conversation UI).</p>
+
+<p>Finally, some code: Add a dependency to the “watson-developer-cloud” to your node chatbot project and see the following code to invoke the Watson conversation service. Replace <code class="highlighter-rouge">your-workspace-id</code>, <code class="highlighter-rouge">your-username</code> and <code class="highlighter-rouge">your-password</code> accordingly.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre></td><td class="code"><pre><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">botBuilder</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'claudia-bot-builder'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">watson</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="s1">'watson-developer-cloud'</span> <span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">DEFAULT_ERR_REPLY</span> <span class="o">=</span> <span class="s1">'Sorry, I\'m taking a break right now. Please come back later.'</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">WORKSPACE_ID</span> <span class="o">=</span> <span class="s1">'your-workspace-id'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">conversation</span> <span class="o">=</span> <span class="nx">watson</span><span class="p">.</span><span class="nx">conversation</span> <span class="p">(</span> <span class="p">{</span>
+  <span class="na">username</span><span class="p">:</span> <span class="s1">'your-username'</span><span class="p">,</span>
+  <span class="na">password</span><span class="p">:</span> <span class="s1">'your-password'</span><span class="p">,</span>
+  <span class="na">version_date</span><span class="p">:</span> <span class="s1">'2016-07-01'</span><span class="p">,</span>
+  <span class="na">version</span><span class="p">:</span> <span class="s1">'v1'</span>
+<span class="p">}</span> <span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">botBuilder</span><span class="p">(</span><span class="nx">request</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request:'</span><span class="p">,</span> <span class="nx">request</span><span class="p">)</span>
+
+    <span class="kd">var</span> <span class="nx">payload</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">workspace_id</span><span class="p">:</span> <span class="nx">WORKSPACE_ID</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">text</span><span class="p">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">text</span>
+      <span class="p">},</span>
+      <span class="na">context</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">};</span>
+
+    <span class="nx">conversation</span><span class="p">.</span><span class="nx">message</span> <span class="p">(</span><span class="nx">payload</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
+          <span class="k">return</span> <span class="nx">DEFAULT_ERR_REPLY</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Response:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
+        <span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">output</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
+    <span class="p">});</span>
+<span class="p">});</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The code is really straight-forward. We construct a payload object with the workspace id and the user’s input text and send it off to to the Watson Conversation API. We then send the output text from Watson as the reply to the user. In case of any errors, we log the error details and return a standard error message to the user.</p>
+
+<h2 id="persistent-context-with-aws-dynamo-db">Persistent context with AWS Dynamo DB</h2>
+<p>If you’ve followed the example until here, you will have noticed that unlike the preview functionality in Watson, our chatbot always starts the conversation from the beginning. You might have guessed already that this is because we always provide an empty context to Watson. To change this, we need to give our bot a memory. It needs to remember where previous conversations have left off, so that it can resume. Our AWS Lambda function is stateless, so we need to store the state externally. There are plenty of options. For example, we could use AWS Elasticache (Memcached for short-lived conversations or Redis for persisted long term conversations). Here, I chose AWS DynamoDB because of its durability and ease of use.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95</pre></td><td class="code"><pre><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">botBuilder</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'claudia-bot-builder'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">watson</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="s1">'watson-developer-cloud'</span> <span class="p">);</span>
+<span class="kr">const</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'q'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'aws-sdk'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">dynamodb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nx">DynamoDB</span><span class="p">.</span><span class="nx">DocumentClient</span><span class="p">();</span>
+<span class="nx">AWS</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">setPromisesDependency</span><span class="p">(</span><span class="nx">Q</span><span class="p">.</span><span class="nx">Promise</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">DEFAULT_ERR_REPLY</span> <span class="o">=</span> <span class="s1">'Sorry, I\'m taking a break right now. Please come back later.'</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">WORKSPACE_ID</span> <span class="o">=</span> <span class="s1">'your-workspace-id'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">conversation</span> <span class="o">=</span> <span class="nx">watson</span><span class="p">.</span><span class="nx">conversation</span> <span class="p">(</span> <span class="p">{</span>
+  <span class="na">username</span><span class="p">:</span> <span class="s1">'your-username'</span><span class="p">,</span>
+  <span class="na">password</span><span class="p">:</span> <span class="s1">'your-password'</span><span class="p">,</span>
+  <span class="na">version_date</span><span class="p">:</span> <span class="s1">'2016-07-01'</span><span class="p">,</span>
+  <span class="na">version</span><span class="p">:</span> <span class="s1">'v1'</span>
+<span class="p">}</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'aws-sdk'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">dynamodb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nx">DynamoDB</span><span class="p">.</span><span class="nx">DocumentClient</span><span class="p">();</span>
+
+<span class="nx">AWS</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">setPromisesDependency</span><span class="p">(</span><span class="nx">Q</span><span class="p">.</span><span class="nx">Promise</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">CTX_TBL_NAME</span> <span class="o">=</span> <span class="s1">'chatbot-todolist-ctx'</span><span class="p">;</span>
+
+<span class="c1">// restore conversation context from dynamodb</span>
+<span class="kd">function</span> <span class="nx">restoreCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Trying to restore context for sender"</span><span class="p">,</span> <span class="nx">sender</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">TableName</span><span class="p">:</span> <span class="nx">CTX_TBL_NAME</span><span class="p">,</span>
+    <span class="na">Key</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s1">'s'</span><span class="p">:</span> <span class="nx">sender</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">dynamodb</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">params</span><span class="p">).</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// persist context to dynamodb</span>
+<span class="kd">function</span> <span class="nx">persistCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Persisting context for sender"</span><span class="p">,</span> <span class="nx">sender</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">TableName</span><span class="p">:</span> <span class="nx">CTX_TBL_NAME</span><span class="p">,</span>
+      <span class="na">Item</span><span class="p">:{</span>
+          <span class="s1">'s'</span><span class="p">:</span> <span class="nx">sender</span><span class="p">,</span>
+          <span class="s1">'x'</span><span class="p">:</span> <span class="nx">context</span>
+      <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">dynamodb</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">params</span><span class="p">).</span><span class="nx">promise</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">botBuilder</span><span class="p">(</span><span class="nx">request</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request:'</span><span class="p">,</span> <span class="nx">request</span><span class="p">)</span>
+
+  <span class="c1">// we're going to store the context under this key</span>
+  <span class="kd">var</span> <span class="nx">sender</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">type</span> <span class="o">+</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="nx">request</span><span class="p">.</span><span class="nx">sender</span> <span class="p">;</span>
+
+  <span class="k">return</span> <span class="nx">restoreCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">existingCtx</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">existingCtx</span><span class="p">.</span><span class="nx">Item</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">context</span> <span class="o">=</span> <span class="nx">existingCtx</span><span class="p">.</span><span class="nx">Item</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span> <span class="c1">// we have a previously stored context</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">payload</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">workspace_id</span><span class="p">:</span> <span class="nx">workspace_id</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">text</span><span class="p">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">text</span>
+      <span class="p">},</span>
+      <span class="na">context</span><span class="p">:</span> <span class="nx">context</span> <span class="c1">// pass it in to watson</span>
+    <span class="p">};</span>
+
+    <span class="k">return</span> <span class="nx">sendMessageToWatson</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="c1">// not shown here, but very similar to the first code example</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Response:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
+
+      <span class="c1">// persist the updated context, then reply to the user</span>
+      <span class="k">return</span> <span class="nx">persistCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">context</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">output</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
+      <span class="p">});</span>
+    <span class="p">})</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
+    <span class="k">return</span> <span class="nx">DEFAULT_ERR_REPLY</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">});</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The code above should be easy to follow. I’ve added two functions: <code class="highlighter-rouge">restoreCtx</code> attempts to load a previous context and <code class="highlighter-rouge">persistCtx</code> saves the updated context. Now we restore the user’s context at the beginning of the request if available and we save it at the end of each request with the updated values from Watson. More specifically, we store a context for each sender id. To avoid id clashes between different message channels, we also include the type (message channel) as part of the primary key. Now all that’s left is to crate a new table ‘chatbot-todolist-ctx’ in DynamoDB. The partition (hash) key is named ‘s’; there is no sort key. We simply store the context object returned from the Watson API in column ‘x’.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>APIs are awesome! By leveraging the Watson conversation API our bot is now able to understand basic human language and can identify the user’s intend. Furthermore we are able to define a basic dialog flow, allowing for real conversations rather than just simple commands. This requires state management, which we have implemented by using AWS DynamoDB.</p>
+
+<p>From here, we probably want to spend a lot of time training our bot to make it smarter. Also we only pretended to add something to a to-do list. The next step would be to integrate with a to-do list service. Maybe this is something for another blog post.</p>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Patrick Ruhkopf - Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Patrick Ruhkopf - Blog</li>
+          <li>subscribe <a href="/blog/feed.xml">via RSS</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/ruhkopf"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">ruhkopf</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/ruhkopf"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">ruhkopf</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thoughts on programming, application design and (someday) photography. 
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45866113-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+
+  </body>
+
+</html>

@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://ruhkopf.name/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot">
   <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+
+  <script src="/blog/js/vendor/picturefill.min.js"></script>
 </head>
 
 
@@ -90,7 +92,7 @@
 3
 4
 5</pre></td><td class="code"><pre><span class="nd">@Bean</span>
-<span class="kd">public</span> <span class="n">RxClient</span><span class="o">&lt;</span><span class="n">RxObservableInvoker</span><span class="o">&gt;</span> <span class="n">createHttpClient</span><span class="o">()</span>
+<span class="kd">public</span> <span class="n">RxClient</span><span class="o">&lt;</span><span class="n">RxObservableInvoker</span><span class="o">&gt;</span> <span class="nf">createHttpClient</span><span class="o">()</span>
 <span class="o">{</span>
   <span class="k">return</span> <span class="n">RxObservable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">ClientBuilder</span><span class="o">.</span><span class="na">newClient</span><span class="o">());</span>
 <span class="o">}</span><span class="w">
@@ -131,7 +133,7 @@
   <span class="kd">private</span> <span class="n">RxClient</span><span class="o">&lt;</span><span class="n">RxObservableInvoker</span><span class="o">&gt;</span> <span class="n">client</span><span class="o">;</span>
 
   <span class="nd">@Test</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="n">shouldGetHelloWorld</span><span class="o">()</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldGetHelloWorld</span><span class="o">()</span>
   <span class="o">{</span>
     <span class="kd">final</span> <span class="n">Observable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">responseMessage</span> <span class="o">=</span> 
         <span class="n">client</span><span class="o">.</span><span class="na">target</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">port</span><span class="o">)</span>
@@ -153,9 +155,9 @@
 5
 6</pre></td><td class="code"><pre><span class="nd">@GET</span>
 <span class="nd">@Path</span><span class="o">(</span><span class="s">"/serverError"</span><span class="o">)</span>
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">simulateServerError</span><span class="p">(</span><span class="o">)</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">simulateServerError</span><span class="o">()</span>
 <span class="o">{</span>
-  <span class="k">throw</span> <span class="k">new</span> <span class="n">ServerErrorException</span><span class="o">(</span><span class="mi">500</span><span class="o">);</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nf">ServerErrorException</span><span class="o">(</span><span class="mi">500</span><span class="o">);</span>
 <span class="o">}</span><span class="w">
 </span></pre></td></tr></tbody></table></code></pre></figure>
 
@@ -167,7 +169,7 @@
 4
 5
 6</pre></td><td class="code"><pre><span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span><span class="o">=</span><span class="n">InternalServerErrorException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerError</span><span class="p">(</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerError</span><span class="o">()</span>
 <span class="o">{</span>
   <span class="n">client</span><span class="o">.</span><span class="na">target</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">port</span><span class="o">)</span>
     <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"hello/serverError"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
@@ -183,7 +185,7 @@
 5
 6
 7</pre></td><td class="code"><pre><span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span> <span class="o">=</span> <span class="n">InternalServerErrorException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerErrorRx</span><span class="p">(</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerErrorRx</span><span class="o">()</span>
 <span class="o">{</span>
   <span class="n">client</span><span class="o">.</span><span class="na">target</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">port</span><span class="o">)</span>
     <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"hello/serverError"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">rx</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
@@ -287,7 +289,7 @@
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">CatchAllExcepionMapper</span> <span class="kd">implements</span> <span class="n">ExceptionMapper</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span>
 <span class="o">{</span>
   <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="n">Response</span> <span class="n">toResponse</span><span class="o">(</span><span class="kd">final</span> <span class="n">Throwable</span> <span class="n">exception</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="n">Response</span> <span class="nf">toResponse</span><span class="o">(</span><span class="kd">final</span> <span class="n">Throwable</span> <span class="n">exception</span><span class="o">)</span>
   <span class="o">{</span>
     <span class="kd">final</span> <span class="kt">int</span> <span class="n">status</span><span class="o">;</span>
     <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>

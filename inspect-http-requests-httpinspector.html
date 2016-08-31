@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://ruhkopf.name/blog/inspect-http-requests-httpinspector">
   <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+
+  <script src="/blog/js/vendor/picturefill.min.js"></script>
 </head>
 
 
@@ -67,8 +69,8 @@
 <p>My first attempts caused the server to return a 500 Internal Server Error. Without any more details to go with, I suspected that maybe some header value or JSON value in my http request was formatted incorrectly. In order to confirm my theory, I needed a way to analyze the http request that my application was producing.</p>
 
 <p>Unfortunately I wasn’t able to find a way to make NSURLConnection log out the complete request details including headers and payload. My next attempt was to use <a href="http://www.charlesproxy.com/">Charles</a>, which is a Proxy that can be used to debug HTTP traffic. I was able to see all header values, but for some reason the JSON payload (raw body) was empty. After double and triple checking that I was correctly setting the <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSMutableURLRequest_Class/index.html#//apple_ref/occ/instp/NSMutableURLRequest/HTTPBody">HTTPBody of NSMutableURLRequest</a> in my code and after changing numerous Charles settings, I still wasn’t able to see the actual payload of my request. Not wanting to lose any more time on this (we only had 2 days in total for our Hackathon projects), I decided to write a simple web server that would just print out all http request details.
-<!--more-->
-## Solution</p>
+<!--more--></p>
+<h2 id="solution">Solution</h2>
 
 <p>And that’s how <a href="https://github.com/ruhkopf/httpinspector">httpinspector</a> was born. It’s using <a href="http://nodejs.org/">Node.js</a> and is really as straight-forward as it can be. All it does is print out the http request header values and the raw payload. It’s less than 20 lines of code and to write the script and get it running it probably took me about 15 minutes. Compare that to my previous 45 minutes time wasted on trying to get Charles to output the same.</p>
 

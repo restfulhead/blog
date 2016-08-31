@@ -332,6 +332,29 @@ pre {
       .post-content h4 {
         font-size: 18px; } }
 
+.picture, .picture-small, .picture-big {
+  border: 1px solid #000000;
+  margin-bottom: 2em;
+  margin-right: 2em; }
+
+.picture {
+  width: 300px; }
+  @media screen and (min-width: 40em) {
+    .picture {
+      width: 600px; } }
+
+.picture-small {
+  width: 150px; }
+  @media screen and (min-width: 40em) {
+    .picture-small {
+      width: 300px; } }
+
+.picture-big {
+  width: 370px; }
+  @media screen and (min-width: 40em) {
+    .picture-big {
+      width: 740px; } }
+
 /**
  * Syntax highlighting styles
  */

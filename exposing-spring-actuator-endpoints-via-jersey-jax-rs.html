@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://ruhkopf.name/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs">
   <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+
+  <script src="/blog/js/vendor/picturefill.min.js"></script>
 </head>
 
 
@@ -150,26 +152,26 @@ There are workarounds that are only based on configuration and do not require an
   
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/health"</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="n">getHealth</span><span class="o">()</span>
+  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getHealth</span><span class="o">()</span>
   <span class="o">{</span>
     <span class="k">return</span> <span class="n">health</span><span class="o">.</span><span class="na">invoke</span><span class="o">();</span>
   <span class="o">}</span>
   
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/metrics"</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="n">getMetrics</span><span class="o">()</span>
+  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getMetrics</span><span class="o">()</span>
   <span class="o">{</span>
     <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">metrics</span><span class="o">.</span><span class="na">invoke</span><span class="o">();</span>
   <span class="o">}</span>
 
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/metrics/{name:.*}"</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="n">getMetric</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"name"</span><span class="o">)</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getMetric</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"name"</span><span class="o">)</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span>
   <span class="o">{</span>
     <span class="kd">final</span> <span class="n">Object</span> <span class="n">value</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">metrics</span><span class="o">.</span><span class="na">invoke</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">value</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
     <span class="o">{</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="n">NotFoundException</span><span class="o">(</span><span class="s">"No such metric: "</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nf">NotFoundException</span><span class="o">(</span><span class="s">"No such metric: "</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
     <span class="o">}</span>
     <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
   <span class="o">}</span>
@@ -177,12 +179,12 @@ There are workarounds that are only based on configuration and do not require an
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/dump"</span><span class="o">)</span>
   <span class="nd">@Produces</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">TEXT_PLAIN</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="n">getThreadDump</span><span class="o">()</span>
+  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getThreadDump</span><span class="o">()</span>
   <span class="o">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="n">StreamingOutput</span><span class="o">()</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">StreamingOutput</span><span class="o">()</span>
     <span class="o">{</span>
       <span class="nd">@Override</span>
-      <span class="kd">public</span> <span class="kt">void</span> <span class="n">write</span><span class="o">(</span><span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">os</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">WebApplicationException</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">write</span><span class="o">(</span><span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">os</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">WebApplicationException</span>
       <span class="o">{</span>
         <span class="kd">final</span> <span class="n">Writer</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedWriter</span><span class="o">(</span><span class="k">new</span> <span class="n">OutputStreamWriter</span><span class="o">(</span><span class="n">os</span><span class="o">));</span>
         <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">ThreadInfo</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">dump</span><span class="o">.</span><span class="na">invoke</span><span class="o">())</span>

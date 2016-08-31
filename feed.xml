@@ -6,9 +6,45 @@
 </description>
     <link>http://ruhkopf.name/blog/</link>
     <atom:link href="http://ruhkopf.name/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 30 Mar 2016 12:09:28 -0400</pubDate>
-    <lastBuildDate>Wed, 30 Mar 2016 12:09:28 -0400</lastBuildDate>
-    <generator>Jekyll v3.1.2</generator>
+    <pubDate>Tue, 30 Aug 2016 20:52:37 -0400</pubDate>
+    <lastBuildDate>Tue, 30 Aug 2016 20:52:37 -0400</lastBuildDate>
+    <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS</title>
+        <description>&lt;p&gt;There are already many examples on how to quickly develop a chatbot with AWS Lambda and API Gateway (see &lt;a href=&quot;https://github.com/claudiajs/example-projects#chat-bots&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://github.com/awslabs/aws-serverless-chatbot-sample&quot;&gt;here&lt;/a&gt;). However, most of them don’t go much further than replying to a few well defined commands. If you want to compete in the brave new bot world, your bot needs to be more than just a new command line interface. It needs to understand human language (NLP) and it needs to be able to have conversations (state, memory). This post shows how to integrate with Watson Conversation and AWS DynamoDB to give your bot natural language understanding and a memory.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 30 Aug 2016 20:44:11 -0400</pubDate>
+        <link>http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws</link>
+        <guid isPermaLink="true">http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws</guid>
+        
+        <category>chatbot</category>
+        
+        <category>watson</category>
+        
+        <category>nlp</category>
+        
+        <category>machine learning</category>
+        
+        <category>aws</category>
+        
+        <category>claudiajs</category>
+        
+        <category>api</category>
+        
+        <category>lambda</category>
+        
+        <category>nodejs</category>
+        
+        <category>apigateway</category>
+        
+        <category>api</category>
+        
+        <category>gateway</category>
+        
+        
+      </item>
     
       <item>
         <title>AWS API gateway as HTTP proxy with Lambda workaround</title>
