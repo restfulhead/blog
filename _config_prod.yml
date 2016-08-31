@@ -18,4 +18,24 @@ twitter_username: ruhkopf
 github_username:  ruhkopf
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet
+
+# Plugins
+gems: [jekyll-picture-tag]
+
+# Picture settings
+picture:
+  source: "assets/images/_fullsize"
+  markup: "picture"
+  presets:
+    gallery:
+      ppi: [1, 1.5]
+      attr:
+        class: "gallery-pict"
+        itemprop: "image"
+      source_medium:
+        media: "(min-width: 40em)"
+        width: "600"
+        height: "300"
+      source_default: 
+        width: "300"

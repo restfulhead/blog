@@ -240,3 +240,33 @@
         }
     }
 }
+
+.picture, .picture-small, .picture-big {
+    border: 1px solid #000000;
+    margin-bottom: 2em;
+    margin-right: 2em;
+}
+
+.picture {
+    width: 300px;
+
+    @include media-query-min(40em) {
+        width: 600px;
+    }
+}
+
+.picture-small {
+    width: 150px;
+
+    @include media-query-min(40em) {
+        width: 300px;
+    }
+}
+
+.picture-big {
+    width: 370px;
+
+    @include media-query-min(40em) {
+        width: 740px;
+    }
+}

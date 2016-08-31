@@ -1,3 +1,8 @@
+First time install
+* gem install jekyll
+* gem install all plugins from _config.yaml
+* image plugin requires ImageMagick, so `brew install ImageMagick` and then `gem install rmagick`
+
 Workflow
 * Create a draft (name file without date) in `_drafts` dir
 * Preview with jekyll serve --drafts
