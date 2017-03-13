@@ -6,9 +6,32 @@
 </description>
     <link>http://ruhkopf.name/blog/</link>
     <atom:link href="http://ruhkopf.name/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 30 Aug 2016 22:53:46 -0400</pubDate>
-    <lastBuildDate>Tue, 30 Aug 2016 22:53:46 -0400</lastBuildDate>
-    <generator>Jekyll v3.2.1</generator>
+    <pubDate>Sun, 12 Mar 2017 23:30:12 -0400</pubDate>
+    <lastBuildDate>Sun, 12 Mar 2017 23:30:12 -0400</lastBuildDate>
+    <generator>Jekyll v3.4.2</generator>
+    
+      <item>
+        <title>Chatbots and virtual assistants for businesses</title>
+        <description>&lt;p&gt;In my first blog post on Arvato’s blog, I’m explaining how chatbots/virtual assistants can provide great value also in the corporate world. By using more automation and providing a seamless interface, processes become much more efficient. But that’s not all. Read the story here: &lt;a href=&quot;http://us.arvato.com/blog/how-virtual-assistants-can-help-your-team-with-automation/&quot;&gt;How virtual assistants can help your team with automation&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 12 Mar 2017 09:02:03 -0400</pubDate>
+        <link>http://ruhkopf.name/blog/chatbots_and_va_for_businesses</link>
+        <guid isPermaLink="true">http://ruhkopf.name/blog/chatbots_and_va_for_businesses</guid>
+        
+        <category>chatbot</category>
+        
+        <category>va</category>
+        
+        <category>automation</category>
+        
+        <category>ai</category>
+        
+        <category>ml</category>
+        
+        <category>nlp</category>
+        
+        
+      </item>
     
       <item>
         <title>Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS</title>
@@ -42,8 +65,6 @@
         <category>api</category>
         
         <category>gateway</category>
-        
-        <category>dynamodb</category>
         
         
       </item>

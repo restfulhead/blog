@@ -6,12 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Patrick Ruhkopf - Blog</title>
+  <title>Posts Tagged &ldquo;inspect&rdquo;</title>
   <meta name="description" content="My thoughts on programming, application design and (someday) photography. 
 ">
 
   <link rel="stylesheet" href="/blog/css/main.css">
-  <link rel="canonical" href="http://ruhkopf.name/blog/">
+  <link rel="canonical" href="http://ruhkopf.name/blog/tags/inspect/">
   <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
 
   <script src="/blog/js/vendor/picturefill.min.js"></script>
@@ -163,91 +163,156 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
-
-  <h1 class="page-heading">Posts</h1>
-
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Mar 12, 2017</span>
-
-        <h2>
-          <a class="post-link" href="/blog/chatbots_and_va_for_businesses">Chatbots and virtual assistants for businesses</a>
-        </h2>
-        <p>In my first blog post on Arvato’s blog, I’m explaining how chatbots/virtual assistants can provide great value also in the corporate world. By using more automation and providing a seamless interface, processes become much more efficient. But that’s not all. Read the story here: <a href="http://us.arvato.com/blog/how-virtual-assistants-can-help-your-team-with-automation/">How virtual assistants can help your team with automation</a></p>
-
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 30, 2016</span>
-
-        <h2>
-          <a class="post-link" href="/blog/smart-chatbot-with-claudiajs-watson-nlp-aws">Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS</a>
-        </h2>
-        <p>There are already many examples on how to quickly develop a chatbot with AWS Lambda and API Gateway (see <a href="https://github.com/claudiajs/example-projects#chat-bots">here</a> and <a href="https://github.com/awslabs/aws-serverless-chatbot-sample">here</a>). However, most of them don’t go much further than replying to a few well defined commands. If you want to compete in the brave new bot world, your bot needs to be more than just a new command line interface. It needs to understand human language (NLP) and it needs to be able to have conversations (state, memory). This post shows how to integrate with Watson Conversation and AWS DynamoDB to give your bot natural language understanding and a memory.</p>
-
-
-      </li>
-    
-      <li>
-        <span class="post-meta">Mar 14, 2016</span>
-
-        <h2>
-          <a class="post-link" href="/blog/aws-api-gateway-http-proxy-lambda-workaround">AWS API gateway as HTTP proxy with Lambda workaround</a>
-        </h2>
-        <p>In addition to invoking <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-lambda.html">Lambda functions</a> and other <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html">AWS services such as S3</a>, the <a href="https://aws.amazon.com/api-gateway/">API Gateway</a> can also act as a <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-mappings.html">proxy</a> between the user and your http based service. For example if you already have a service based architecture you could integrate it with the gateway to maintain, monitor and secure a public API for your services. However, Amazon’s priorities seem to be on the former two integration methods, because when it comes to the details the HTTP proxy integration is quite painful at the moment. In this post I will highlight some of the pitfalls and provide workarounds.</p>
-
-
-      </li>
-    
-      <li>
-        <span class="post-meta">May 21, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs">Exposing Spring Actuator endpoints via Jersey</a>
-        </h2>
-        <blockquote>
-  <p>Transparency makes the difference between a system that improves over time in production and one that stagnates on decays.<sup>[1]</sup></p>
-</blockquote>
-
-<p>Spring Boot comes with a number of <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html">production ready endpoints</a> that expose information about your application’s configuration and health. This insight is vital for monitoring. By default Spring Actuator functionality is accessible via Spring MVC. This is not ideal when you use Jersey (JAX-RS) as your primary web service framework. In fact, if you use Spring Boot’s Jersey Starter sample project, the endpoints don’t even work out of the box (see <a href="https://github.com/spring-projects/spring-boot/issues/2025">Issue #2025</a>). In this post, I’m going to demonstrate how to expose the Actuator endpoints via Jersey.</p>
-
-
-      </li>
-    
-      <li>
-        <span class="post-meta">Apr 12, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot">Catch-all error handling for web services with RxClient and Spring Boot</a>
-        </h2>
-        <p>One of Spring Boot’s many <a href="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples">sample projects</a> demonstrates how to configure Spring with <a href="https://jersey.java.net">Jersey</a>. We’re using the JAX-RS API a lot in projects for developing of RESTful web services. It was designed for this specific task from the beginning, rather than retrofitted like Spring MVC was. Jersey also offers a <a href="https://jersey.java.net/documentation/latest/rx-client.html">reactive client API</a> which supports a reactive programming model.</p>
-
-<p>In this post I’m going to show how to use the the reactive Jersey client based on RxJava together with Spring Boot. This post will also address how to handle and communicate server side errors back to the client. Specifically there are some issues I’ve discovered which are related to using the reactive Jersey client together with the embedded Tomcat container.</p>
-
-
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 12, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/blog/inspect-http-requests-httpinspector">Inspect your http requests with httpinspector</a>
-        </h2>
-        <p>Last week at our Hackathon I got my hands dirty with <a href="https://developer.apple.com/swift/">Swift</a>. In particular I was using <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/index.html#//apple_ref/occ/clm/NSURLConnection/sendAsynchronousRequest:queue:completionHandler:">NSURLConnection</a> to post JSON http requests to a 3rd party web service. The web service wasn’t documented. All I had were a few request examples that I knew were successful before. So I needed my web service client to produce similar http headers and a similar JSON body.</p>
+        <h2 class="post_title">Posts Tagged &ldquo;inspect&rdquo;</h2>
+<ul>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<li class="archive_list">
+		<h3 class="archive_list_header"><a class="archive_list_article_link" href='/inspect-http-requests-httpinspector'>Inspect your http requests with httpinspector</a></h3>
+		<time class="archive_list_post_date" datetime='2015-01-12'>01/12/15</time>
+		<p class="summary"><p>Last week at our Hackathon I got my hands dirty with <a href="https://developer.apple.com/swift/">Swift</a>. In particular I was using <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/index.html#//apple_ref/occ/clm/NSURLConnection/sendAsynchronousRequest:queue:completionHandler:">NSURLConnection</a> to post JSON http requests to a 3rd party web service. The web service wasn’t documented. All I had were a few request examples that I knew were successful before. So I needed my web service client to produce similar http headers and a similar JSON body.</p>
 
 <p>My first attempts caused the server to return a 500 Internal Server Error. Without any more details to go with, I suspected that maybe some header value or JSON value in my http request was formatted incorrectly. In order to confirm my theory, I needed a way to analyze the http request that my application was producing.</p>
 
 <p>Unfortunately I wasn’t able to find a way to make NSURLConnection log out the complete request details including headers and payload. My next attempt was to use <a href="http://www.charlesproxy.com/">Charles</a>, which is a Proxy that can be used to debug HTTP traffic. I was able to see all header values, but for some reason the JSON payload (raw body) was empty. After double and triple checking that I was correctly setting the <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/Classes/NSMutableURLRequest_Class/index.html#//apple_ref/occ/instp/NSMutableURLRequest/HTTPBody">HTTPBody of NSMutableURLRequest</a> in my code and after changing numerous Charles settings, I still wasn’t able to see the actual payload of my request. Not wanting to lose any more time on this (we only had 2 days in total for our Hackathon projects), I decided to write a simple web server that would just print out all http request details.</p>
 
 
-      </li>
-    
-  </ul>
-
-</div>
-
+	</li>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</ul>
       </div>
     </div>
 
