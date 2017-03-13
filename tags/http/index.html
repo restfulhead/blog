@@ -218,9 +218,9 @@
 	
 	
 	
-	<li class="archive_list">
-		<h3 class="archive_list_header"><a class="archive_list_article_link" href='/aws-api-gateway-http-proxy-lambda-workaround'>AWS API gateway as HTTP proxy with Lambda workaround</a></h3>
-		<time class="archive_list_post_date" datetime='2016-03-14'>03/14/16</time>
+	<li>
+		<h3><a href='http://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround'>AWS API gateway as HTTP proxy with Lambda workaround</a></h3>
+		<time datetime='2016-03-14'>03/14/16</time>
 		<p class="summary"><p>In addition to invoking <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-lambda.html">Lambda functions</a> and other <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html">AWS services such as S3</a>, the <a href="https://aws.amazon.com/api-gateway/">API Gateway</a> can also act as a <a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-mappings.html">proxy</a> between the user and your http based service. For example if you already have a service based architecture you could integrate it with the gateway to maintain, monitor and secure a public API for your services. However, Amazon’s priorities seem to be on the former two integration methods, because when it comes to the details the HTTP proxy integration is quite painful at the moment. In this post I will highlight some of the pitfalls and provide workarounds.</p>
 
 
@@ -290,9 +290,9 @@
 	
 	
 	
-	<li class="archive_list">
-		<h3 class="archive_list_header"><a class="archive_list_article_link" href='/inspect-http-requests-httpinspector'>Inspect your http requests with httpinspector</a></h3>
-		<time class="archive_list_post_date" datetime='2015-01-12'>01/12/15</time>
+	<li>
+		<h3><a href='http://ruhkopf.name/blog/inspect-http-requests-httpinspector'>Inspect your http requests with httpinspector</a></h3>
+		<time datetime='2015-01-12'>01/12/15</time>
 		<p class="summary"><p>Last week at our Hackathon I got my hands dirty with <a href="https://developer.apple.com/swift/">Swift</a>. In particular I was using <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/index.html#//apple_ref/occ/clm/NSURLConnection/sendAsynchronousRequest:queue:completionHandler:">NSURLConnection</a> to post JSON http requests to a 3rd party web service. The web service wasn’t documented. All I had were a few request examples that I knew were successful before. So I needed my web service client to produce similar http headers and a similar JSON body.</p>
 
 <p>My first attempts caused the server to return a 500 Internal Server Error. Without any more details to go with, I suspected that maybe some header value or JSON value in my http request was formatted incorrectly. In order to confirm my theory, I needed a way to analyze the http request that my application was producing.</p>

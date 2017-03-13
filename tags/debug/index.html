@@ -278,9 +278,9 @@
 	
 	
 	
-	<li class="archive_list">
-		<h3 class="archive_list_header"><a class="archive_list_article_link" href='/inspect-http-requests-httpinspector'>Inspect your http requests with httpinspector</a></h3>
-		<time class="archive_list_post_date" datetime='2015-01-12'>01/12/15</time>
+	<li>
+		<h3><a href='http://ruhkopf.name/blog/inspect-http-requests-httpinspector'>Inspect your http requests with httpinspector</a></h3>
+		<time datetime='2015-01-12'>01/12/15</time>
 		<p class="summary"><p>Last week at our Hackathon I got my hands dirty with <a href="https://developer.apple.com/swift/">Swift</a>. In particular I was using <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLConnection_Class/index.html#//apple_ref/occ/clm/NSURLConnection/sendAsynchronousRequest:queue:completionHandler:">NSURLConnection</a> to post JSON http requests to a 3rd party web service. The web service wasn’t documented. All I had were a few request examples that I knew were successful before. So I needed my web service client to produce similar http headers and a similar JSON body.</p>
 
 <p>My first attempts caused the server to return a 500 Internal Server Error. Without any more details to go with, I suspected that maybe some header value or JSON value in my http request was formatted incorrectly. In order to confirm my theory, I needed a way to analyze the http request that my application was producing.</p>
