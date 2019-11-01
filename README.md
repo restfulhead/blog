@@ -1,3 +1,6 @@
+Activate Ruby Env
+`eval "$(rbenv init -)"`
+
 First time install
 * gem install jekyll
 * gem install all plugins from _config.yaml
