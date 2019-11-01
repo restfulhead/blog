@@ -196,33 +196,33 @@
 
 <p>To do so, we need to add a dependency to jersey-rx-client-rxjava. This will provide us with an RxJava based implementation of the client. Spring Boot comes with an opinionated dependency management including many well known 3rd party libraries. While the Jersey RxClient extension is not managed by Spring, we can still leverage the Spring managed property “${jersey.version}” to specify the version. Here’s what needs to be added to Maven’s pom.xml.</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
-5</pre></td><td class="code"><pre><span class="nt">&lt;dependency&gt;</span>
+5
+</pre></td><td class="code"><pre><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.glassfish.jersey.ext.rx<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>jersey-rx-client-rxjava<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>${jersey.version}<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="nt">&lt;/dependency&gt;</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Next we need to configure our reactive Jersey client. Add the following code to SampleJerseyApplication.java</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
-5</pre></td><td class="code"><pre><span class="nd">@Bean</span>
+5
+</pre></td><td class="code"><pre><span class="nd">@Bean</span>
 <span class="kd">public</span> <span class="n">RxClient</span><span class="o">&lt;</span><span class="n">RxObservableInvoker</span><span class="o">&gt;</span> <span class="nf">createHttpClient</span><span class="o">()</span>
 <span class="o">{</span>
   <span class="k">return</span> <span class="n">RxObservable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">ClientBuilder</span><span class="o">.</span><span class="na">newClient</span><span class="o">());</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Now that we have our client configured, let’s write a simple hello world test case.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
@@ -242,7 +242,8 @@
 18
 19
 20
-21</pre></td><td class="code"><pre><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringJUnit4ClassRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+21
+</pre></td><td class="code"><pre><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringJUnit4ClassRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="nd">@SpringApplicationConfiguration</span><span class="o">(</span><span class="n">classes</span> <span class="o">=</span> <span class="n">SampleJerseyApplication</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="nd">@IntegrationTest</span><span class="o">(</span><span class="s">"server.port=0"</span><span class="o">)</span>
 <span class="nd">@WebAppConfiguration</span>
@@ -262,81 +263,80 @@
           <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">rx</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
     <span class="n">assertThat</span><span class="o">(</span><span class="n">responseMessage</span><span class="o">.</span><span class="na">toBlocking</span><span class="o">().</span><span class="na">single</span><span class="o">(),</span> <span class="n">equalTo</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">));</span>
   <span class="o">}</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>To highlight in the above code is that <code class="highlighter-rouge">.rx()</code> gives us access to the reactive interface of the client. That means a GET will return an Observable rather than the actual response. There are many good presentations out there about why and how to use Observables. This is beyond the scope of this article, though. That’s why for test purposes, we simply block to retrieve the result.</p>
 
 <h2 id="problem">Problem</h2>
 <p>In addition to the success test case, we also would like to test server error scenarios. To do so, let’s add some code to the Endpoint.class that causes a server error and implement a new test.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre><span class="nd">@GET</span>
-<span class="nd">@Path</span><span class="o">(</span><span class="s">"/serverError"</span><span class="o">)</span>
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">simulateServerError</span><span class="o">()</span>
-<span class="o">{</span>
-  <span class="k">throw</span> <span class="k">new</span> <span class="nf">ServerErrorException</span><span class="o">(</span><span class="mi">500</span><span class="o">);</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
-
-<p>The following test method uses the non-reactive interface. It’s expecting the client to throw an <code class="highlighter-rouge">InternalServerErrorException</code>.</p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
-2
-3
-4
-5
-6</pre></td><td class="code"><pre><span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span><span class="o">=</span><span class="n">InternalServerErrorException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerError</span><span class="o">()</span>
-<span class="o">{</span>
-  <span class="n">client</span><span class="o">.</span><span class="na">target</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">port</span><span class="o">)</span>
-    <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"hello/serverError"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
-
-<p>The above test passes. However, things change when using the reactive interface.</p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
 5
 6
-7</pre></td><td class="code"><pre><span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span> <span class="o">=</span> <span class="n">InternalServerErrorException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerErrorRx</span><span class="o">()</span>
+</pre></td><td class="code"><pre><span class="nd">@GET</span>
+<span class="nd">@Path</span><span class="o">(</span><span class="s">"/serverError"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">simulateServerError</span><span class="o">()</span>
+<span class="o">{</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nf">ServerErrorException</span><span class="o">(</span><span class="mi">500</span><span class="o">);</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The following test method uses the non-reactive interface. It’s expecting the client to throw an <code class="highlighter-rouge">InternalServerErrorException</code>.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span><span class="o">=</span><span class="n">InternalServerErrorException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerError</span><span class="o">()</span>
 <span class="o">{</span>
   <span class="n">client</span><span class="o">.</span><span class="na">target</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">port</span><span class="o">)</span>
-    <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"hello/serverError"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">rx</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-    <span class="o">.</span><span class="na">toBlocking</span><span class="o">().</span><span class="na">single</span><span class="o">();</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+    <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"hello/serverError"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>The above test fails with a message <code class="highlighter-rouge">Expected exception: javax.ws.rs.InternalServerErrorException</code>. In other words, no exception was thrown. When further inspecting the result of this call, I was surprised to see the server sends a response body as shown here:</p>
+<p>The above test passes. However, things change when using the reactive interface.</p>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
 5
 6
 7
-8</pre></td><td class="code"><pre>&lt; 500
+</pre></td><td class="code"><pre><span class="nd">@Test</span><span class="o">(</span><span class="n">expected</span> <span class="o">=</span> <span class="n">InternalServerErrorException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">shouldHandleServerErrorRx</span><span class="o">()</span>
+<span class="o">{</span>
+  <span class="n">client</span><span class="o">.</span><span class="na">target</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">port</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">path</span><span class="o">(</span><span class="s">"hello/serverError"</span><span class="o">).</span><span class="na">request</span><span class="o">().</span><span class="na">rx</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">toBlocking</span><span class="o">().</span><span class="na">single</span><span class="o">();</span>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The above test fails with a message <code class="highlighter-rouge">Expected exception: javax.ws.rs.InternalServerErrorException</code>. In other words, no exception was thrown. When further inspecting the result of this call, I was surprised to see the server sends a response body as shown here:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>&lt; 500
 &lt; Connection: close
 &lt; Content-Language: en
 &lt; Content-Length: 1082
 &lt; Content-Type: text/html;charset=utf-8
 &lt; Server: Apache-Coyote/1.1
 
-&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;Apache Tomcat/8.0.20 - Error report&lt;/title&gt; ...<span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;Apache Tomcat/8.0.20 - Error report&lt;/title&gt; ...</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This looks familiar, doesn’t it? For some reason when using the RxClient, Tomcat replies with the standard error page. (This also happens by the way if we request and produce application/json; it’s not related to the fact that we’re requesting plain-text). In a more complex configuration we even saw cases where Tomcat’s <code class="highlighter-rouge">StandardHostValve</code>  was trying to make a request to a non existing error page. Here’s an extract from the log.</p>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
@@ -351,7 +351,8 @@
 13
 14
 15
-16</pre></td><td class="code"><pre>* Server has received a request on thread http-nio-auto-1-exec-1
+16
+</pre></td><td class="code"><pre>* Server has received a request on thread http-nio-auto-1-exec-1
 &gt; POST http://localhost:51816/testWebResource/serverError
 &gt; content-type: application/json
 
@@ -366,8 +367,7 @@
 
 * Server responded with a response on thread http-nio-auto-1-exec-1
 &lt; 404
-&lt; Content-Type: application/json<span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+&lt; Content-Type: application/json</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This caused a painful troubleshooting session, because all we were seeing on the client side was the 404 error code, but not the 500.</p>
 
@@ -378,7 +378,7 @@
 
 <p>The solution that I choose was simple in the end. We were already using ExceptionMappers to map certain business exceptions to specific web service responses. To avoid using Tomcat’s error handling completely, we can just introduce a catch-all exception mapper that catches any exception and translates it to a response.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 3
 4
@@ -407,7 +407,8 @@
 27
 28
 29
-30</pre></td><td class="code"><pre><span class="nd">@Provider</span>
+30
+</pre></td><td class="code"><pre><span class="nd">@Provider</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">CatchAllExcepionMapper</span> <span class="kd">implements</span> <span class="n">ExceptionMapper</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span>
 <span class="o">{</span>
   <span class="nd">@Override</span>
@@ -436,17 +437,16 @@
 
     <span class="k">return</span> <span class="n">Response</span><span class="o">.</span><span class="na">status</span><span class="o">(</span><span class="n">status</span><span class="o">).</span><span class="na">entity</span><span class="o">(</span><span class="n">response</span><span class="o">).</span><span class="na">type</span><span class="o">(</span><span class="s">"application/json"</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
   <span class="o">}</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
 <p>The mapper will catch all Throwables and translate them to a 500 Server Error response with a JSON body. In case of a WebApplicationException we can make use of its attributes, such as the status and the type (client or server). Here’s a sample output:</p>
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
-3</pre></td><td class="code"><pre>&lt; 500
+3
+</pre></td><td class="code"><pre>&lt; 500
 &lt; Content-Type: application/json
-&lt; {"type":"server","message":"Internal Server Error","status":500}<span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+&lt; {"type":"server","message":"Internal Server Error","status":500}</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>There’s still room for improvement. For example if the exception mapper implementation itself throws an exception, it again gets routed to the standard error handler which tries to render Tomcat’s default error page. Also to point out that the client  does not throw an exception. Therefore it’s up to the caller to handle the response appropriately.</p>
 
@@ -481,16 +481,16 @@
         <ul class="social-media-list">
           
           <li>
-            <a href="https://github.com/ruhkopf"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
-</span><span class="username">ruhkopf</span></a>
+            <a href="https://github.com/serenehead"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">serenehead</span></a>
 
           </li>
           
 
           
           <li>
-            <a href="https://twitter.com/ruhkopf"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
-</span><span class="username">ruhkopf</span></a>
+            <a href="https://twitter.com/serenehead"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">serenehead</span></a>
 
           </li>
           
