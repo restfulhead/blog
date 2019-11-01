@@ -16,7 +16,7 @@ I am a solution architect with a broad range of experience. My specialties inclu
 ## Send me a message
 {% include contact-form.html %}
 
-[twitter]: https://twitter.com/ruhkopf
+[twitter]: https://twitter.com/serenehead
 [linkedin]: http://www.linkedin.com/in/ruhkopf
-[github]: https://github.com/ruhkopf
+[github]: https://github.com/serenehead
 [facebook]: https://www.facebook.com/ruhkopf
