@@ -6,7 +6,7 @@ date: 2019-12-30 00:00:00 -0500
 tags: [serverless, faas, api, back-end, jamstack, javascript, typescript, nodejs, nosql]
 excerpt_separator: <!--more-->
 ---
-During the last couple of years my team has built different Serverless Web applications both on AWS and on Azure. In this series of posts I would like to share a few lessons learned and patterns that have worked very well for us.
+During the last couple of years my team has built different Serverless Web applications both on AWS and on Azure. In this series of posts, I would like to share a few lessons learned and patterns that have worked very well for us.
 <!--more-->
 
 ## The ingredients
@@ -22,7 +22,7 @@ Our Serverless application usually consists of the following components:
 You are reading part 1 of this series, where I'm going to focus on the back-end.
 
 ### Choosing one language
-Many articles about Microservices and Serverless promote the fact that you can use different programming languages to implement APIs. This is a double edged sword. On the one hand it gives you flexibility to use the right tool for the job. It's also great, if you already have many diverse teams. On the other hand, keep in mind that the more languages you introduce, the more effort you will have to address common concerns, differences in runtime behavior and configuration format, etc.
+Many articles about Microservices and Serverless promote the fact that you can use different programming languages to implement APIs. This is a double-edged sword. On the one hand it gives you flexibility to use the right tool for the job. It's also great, if you already have many diverse teams. On the other hand, keep in mind that the more languages you introduce, the more effort you will have to address common concerns, differences in runtime behavior and configuration format, etc.
 
 What worked well for us is to settle on a main language and only make exceptions for special cases. Such cases could be code for machine learning running on Python or functions that require high performance using Rust. However, the vast majority of our code uses TypeScript (JavaScript). This has the added benefit that we can use the same language in the back-end and front-end, which makes full-stack development much more streamlined.
 
@@ -43,12 +43,12 @@ In addition to generating the models, it also runs TSLint to clean up the genera
 
 ## The API implementation - Function as a service (FaaS) 
 
-FaaS makes it really easy to develop and execute business logic. All you have to do is write your code and deploy it to your cloud provider. The cloud provider is then responsible to execute the functions in a secure, fault tolerant and scalable environment. This is pretty awesome, because you no longer need to maintain servers, scaling happens automatically and you pay only for what you use (per request). Functions are triggered based on events. This could be an http event for API calls, a database event for record updates, an IOT event, etc. 
+FaaS makes it really easy to develop and execute business logic. All you have to do is write your code and deploy it to your cloud provider. The cloud provider is then responsible to execute the functions in a secure, fault tolerant and scalable environment. This is pretty awesome, because you no longer need to maintain servers, scaling happens automatically, and you pay only for what you use (per request). Functions are triggered based on events. This could be an http event for API calls, a database event for record updates, an IOT event, etc. 
 
 Cloud providers typically run your code inside containers under the hood. In order to allow for automatic and horizontal scaling, the provider will start and terminate containers on demand. So, there is no guarantee that the same container is used during the next function invocation. You need to consider this when architecting your application. 
 
 ### Cold starts
-When a new container is created, your function is started from scratch (cold start). This means that all global state is empty. You may want to consider this when selecting languages and frameworks. For example a traditional Java / Spring Framework based application will take a long time to initialize. Long startup times don't play well in a FaaS environment. If your function initialization takes a long time, your users will experience an unpleasant latency or you have to do workarounds such as regular warmup calls. 
+When a new container is created, your function is started from scratch (cold start). This means that all global state is empty. You may want to consider this when selecting languages and frameworks. For example, a traditional Java / Spring Framework based application will take a long time to initialize. Long startup times don't play well in a FaaS environment. If your function initialization takes a long time, your users will experience an unpleasant latency, or you have to do workarounds such as regular warmup calls. 
 
 ### State (or the lack of)
 Your functions should be stateless as much as possible, because you cannot rely on global state or the file system. Where traditional applications often use global variables, memory or the file system, with FaaS the goal is to isolated state, i.e. move it elsewhere. Here are a few practical examples.
@@ -62,19 +62,19 @@ Your functions should be stateless as much as possible, because you cannot rely 
 | Database authentication   | In memory                                            | Lambda execution role or Azure Managed Identities  |
 | Database connection       | In memory                                            | Aurora http connector                              |
 
-However, in practice there's often still the need for global state. For example a third party service may require an access token which you need to request first. This could be part of the initialization code that you run and you could store the result in a global/static variable. If a container is re-used (warm), then the token will already be available.
+However, in practice there's often still the need for global state. For example, a third party service may require an access token which you need to request first. This could be part of the initialization code that you run and you could store the result in a global/static variable. If a container is re-used (warm), then the token will already be available.
 
-It's important to note that the container lifecycle and startup times are significantly different between [AWS Lambda][aws-lambda] and [Azure Functions][azure-functions]. For example Azure offers a premium plan, where at least one instance of your function application is always running. Think about the previous example, where your function requires an access token: Now you also have to check the token's expiration date, because your function might run for several hours or days and therefore just requesting a new token during initialization will no longer work. Also in AWS functions are much more isolated and run independently where in Azure all functions of the same app are running together.
+It's important to note that the container lifecycle and startup times are significantly different between [AWS Lambda][aws-lambda] and [Azure Functions][azure-functions]. For example, Azure offers a premium plan, where at least one instance of your function application is always running. Think about the previous example, where your function requires an access token: Now you also have to check the token's expiration date, because your function might run for several hours or days and therefore just requesting a new token during initialization will no longer work. Also in AWS functions are much more isolated and run independently where in Azure all functions of the same app are running together.
 
 This part of the Serverless world is unfortunately still very painful and time consuming. My recommendation is to write a common initialization-with-retry function that is thoroughly tested and generic enough so that it can be used for various initialization scenarios (e.g. retrieving access tokens, connecting to databases, ...)
 
 ## Data stores
 
-The need to isolate state is something to consider when choosing a database as well. Access patterns may change and certain databases might be better suited for a Serverless environment. For example SQL databases usually require connection management, which, as we saw in the previous section, is not ideal. AWS addresses this with the [Data API for Aurora Serverless][aws-aurora-http]. Instead of a persisted connection, you can simply send http requests to run SQL statements. [DynamoDB][aws-dynamodb], the AWS proprietary NoSQL database, also allows data manipulation via http requests without connection management. 
+The need to isolate state is something to consider when choosing a database as well. Access patterns may change and certain databases might be better suited for a Serverless environment. For example, SQL databases usually require connection management, which, as we saw in the previous section, is not ideal. AWS addresses this with the [Data API for Aurora Serverless][aws-aurora-http]. Instead of a persisted connection, you can simply send http requests to run SQL statements. [DynamoDB][aws-dynamodb], the AWS proprietary NoSQL database, also allows data manipulation via http requests without connection management. 
 
 Sidenote: If you are concerned about vendor lock-in when choosing a NoSQL database, MongoDB might be a good choice. Both [AWS][aws-mongodb] and [Azure][azure-mongodb] offer managed databases with MongoDB compatibility.
 
-We typically use a NoSQL database such as [AWS DynamoDB][aws-dynamodb] or [Azure CosmosDB][azure-mongodb] as the primary datastore that is accessed by our API. Optionally we add a full-text search service such as [Elasticsearch][elasticsearch], a cache service such as [Redis][redis] and/or a SQL database for reporting. Using a database that is offered as platform as a service (PaaS) really pays off, because those usually integrate well with your back-end functions. For example it is very easy to configure a Lambda function that listens to DynamoDB changes and then indexes the data into Elasticsearch, Redis or a SQL reporting table. Similar you can configure an Azure function to be triggered by CosmosDB. This helps especially when implementing the [CQRS pattern][cqrs] often found in event based systems.
+We typically use a NoSQL database such as [AWS DynamoDB][aws-dynamodb] or [Azure CosmosDB][azure-mongodb] as the primary datastore that is accessed by our API. Optionally we add a full-text search service such as [Elasticsearch][elasticsearch], a cache service such as [Redis][redis] and/or a SQL database for reporting. Using a database that is offered as platform as a service (PaaS) really pays off, because those usually integrate well with your back-end functions. For example, it is very easy to configure a Lambda function that listens to DynamoDB changes and then indexes the data into Elasticsearch, Redis or a SQL reporting table. Similar you can configure an Azure function to be triggered by CosmosDB. This helps especially when implementing the [CQRS pattern][cqrs] often found in event based systems.
 
 ## The API Gateway
 
