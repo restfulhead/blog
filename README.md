@@ -5,8 +5,7 @@ First time install
 * gem install jekyll
 * gem install all plugins from _config.yaml
 * image plugin requires ImageMagick 6 (not 7)
-** either `brew install imagemagick@6` and then `gem install rmagick` (you need to add ImageMagick to the path for this)
-** or MacPorts
+** either `brew install imagemagick@6`, `brew install pkg-config` and then `gem install rmagick` (you need to add ImageMagick to the path for this)
 
 Workflow Current
 * Create a draft (name file without date) in `_drafts` dir

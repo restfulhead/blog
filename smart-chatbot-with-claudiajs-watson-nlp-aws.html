@@ -9,11 +9,13 @@
   <title>Building a smart Chatbot with ClaudiaJS, Watson NLP and AWS</title>
   <meta name="description" content="There are already many examples on how to quickly develop a chatbot with AWS Lambda and API Gateway (see here and here). However, most of them don’t go much ...">
 
+  <link rel="stylesheet" href="/blog/css/vendor/cookieconsent.min.cd0d0b6e50ff01ff2f3a9a70d7cfb66a7c6cb9acf7a566325568be6d3bd31fc4.css">
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws">
   <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
 
   <script src="/blog/js/vendor/picturefill.min.js"></script>
+
 </head>
 
 
@@ -52,6 +54,20 @@
         
           
           
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
                     
         
                     
@@ -277,24 +293,24 @@
 36
 37
 38
-</pre></td><td class="code"><pre><span class="s1">'use strict'</span><span class="p">;</span>
+</pre></td><td class="code"><pre><span class="dl">'</span><span class="s1">use strict</span><span class="dl">'</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">botBuilder</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'claudia-bot-builder'</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">watson</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="s1">'watson-developer-cloud'</span> <span class="p">);</span>
+<span class="kd">const</span> <span class="nx">botBuilder</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">claudia-bot-builder</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">watson</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="dl">'</span><span class="s1">watson-developer-cloud</span><span class="dl">'</span> <span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">DEFAULT_ERR_REPLY</span> <span class="o">=</span> <span class="s1">'Sorry, I</span><span class="se">\'</span><span class="s1">m taking a break right now. Please come back later.'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">DEFAULT_ERR_REPLY</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Sorry, I</span><span class="se">\'</span><span class="s1">m taking a break right now. Please come back later.</span><span class="dl">'</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">WORKSPACE_ID</span> <span class="o">=</span> <span class="s1">'your-workspace-id'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">WORKSPACE_ID</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">your-workspace-id</span><span class="dl">'</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">conversation</span> <span class="o">=</span> <span class="nx">watson</span><span class="p">.</span><span class="nx">conversation</span> <span class="p">(</span> <span class="p">{</span>
-  <span class="na">username</span><span class="p">:</span> <span class="s1">'your-username'</span><span class="p">,</span>
-  <span class="na">password</span><span class="p">:</span> <span class="s1">'your-password'</span><span class="p">,</span>
-  <span class="na">version_date</span><span class="p">:</span> <span class="s1">'2016-07-01'</span><span class="p">,</span>
-  <span class="na">version</span><span class="p">:</span> <span class="s1">'v1'</span>
+  <span class="na">username</span><span class="p">:</span> <span class="dl">'</span><span class="s1">your-username</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">password</span><span class="p">:</span> <span class="dl">'</span><span class="s1">your-password</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">version_date</span><span class="p">:</span> <span class="dl">'</span><span class="s1">2016-07-01</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">version</span><span class="p">:</span> <span class="dl">'</span><span class="s1">v1</span><span class="dl">'</span>
 <span class="p">}</span> <span class="p">);</span>
 
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">botBuilder</span><span class="p">(</span><span class="nx">request</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request:'</span><span class="p">,</span> <span class="nx">request</span><span class="p">)</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Request:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">request</span><span class="p">)</span>
 
     <span class="kd">var</span> <span class="nx">payload</span> <span class="o">=</span> <span class="p">{</span>
       <span class="na">workspace_id</span><span class="p">:</span> <span class="nx">WORKSPACE_ID</span><span class="p">,</span>
@@ -307,14 +323,15 @@
     <span class="nx">conversation</span><span class="p">.</span><span class="nx">message</span> <span class="p">(</span><span class="nx">payload</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
+          <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Error:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
           <span class="k">return</span> <span class="nx">DEFAULT_ERR_REPLY</span><span class="p">;</span>
         <span class="p">}</span>
     
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Response:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Response:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
         <span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">output</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
     <span class="p">});</span>
-<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="p">});</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>The code is really straight-forward. We construct a payload object with the workspace id and the user’s input text and send it off to to the Watson Conversation API. We then send the output text from Watson as the reply to the user. In case of any errors, we log the error details and return a standard error message to the user.</p>
 
@@ -416,41 +433,41 @@
 93
 94
 95
-</pre></td><td class="code"><pre><span class="s1">'use strict'</span><span class="p">;</span>
+</pre></td><td class="code"><pre><span class="dl">'</span><span class="s1">use strict</span><span class="dl">'</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">botBuilder</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'claudia-bot-builder'</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">watson</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="s1">'watson-developer-cloud'</span> <span class="p">);</span>
-<span class="kd">const</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'q'</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'aws-sdk'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">botBuilder</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">claudia-bot-builder</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">watson</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="dl">'</span><span class="s1">watson-developer-cloud</span><span class="dl">'</span> <span class="p">);</span>
+<span class="kd">const</span> <span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">q</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">aws-sdk</span><span class="dl">'</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">dynamodb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nx">DynamoDB</span><span class="p">.</span><span class="nx">DocumentClient</span><span class="p">();</span>
 <span class="nx">AWS</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">setPromisesDependency</span><span class="p">(</span><span class="nx">Q</span><span class="p">.</span><span class="nb">Promise</span><span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">DEFAULT_ERR_REPLY</span> <span class="o">=</span> <span class="s1">'Sorry, I</span><span class="se">\'</span><span class="s1">m taking a break right now. Please come back later.'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">DEFAULT_ERR_REPLY</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Sorry, I</span><span class="se">\'</span><span class="s1">m taking a break right now. Please come back later.</span><span class="dl">'</span><span class="p">;</span>
 
-<span class="kd">const</span> <span class="nx">WORKSPACE_ID</span> <span class="o">=</span> <span class="s1">'your-workspace-id'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">WORKSPACE_ID</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">your-workspace-id</span><span class="dl">'</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">conversation</span> <span class="o">=</span> <span class="nx">watson</span><span class="p">.</span><span class="nx">conversation</span> <span class="p">(</span> <span class="p">{</span>
-  <span class="na">username</span><span class="p">:</span> <span class="s1">'your-username'</span><span class="p">,</span>
-  <span class="na">password</span><span class="p">:</span> <span class="s1">'your-password'</span><span class="p">,</span>
-  <span class="na">version_date</span><span class="p">:</span> <span class="s1">'2016-07-01'</span><span class="p">,</span>
-  <span class="na">version</span><span class="p">:</span> <span class="s1">'v1'</span>
+  <span class="na">username</span><span class="p">:</span> <span class="dl">'</span><span class="s1">your-username</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">password</span><span class="p">:</span> <span class="dl">'</span><span class="s1">your-password</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">version_date</span><span class="p">:</span> <span class="dl">'</span><span class="s1">2016-07-01</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">version</span><span class="p">:</span> <span class="dl">'</span><span class="s1">v1</span><span class="dl">'</span>
 <span class="p">}</span> <span class="p">);</span>
 
-<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'aws-sdk'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">AWS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">aws-sdk</span><span class="dl">'</span><span class="p">);</span>
 <span class="kd">const</span> <span class="nx">dynamodb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AWS</span><span class="p">.</span><span class="nx">DynamoDB</span><span class="p">.</span><span class="nx">DocumentClient</span><span class="p">();</span>
 
 <span class="nx">AWS</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">setPromisesDependency</span><span class="p">(</span><span class="nx">Q</span><span class="p">.</span><span class="nb">Promise</span><span class="p">);</span>
 
-<span class="kd">const</span> <span class="nx">CTX_TBL_NAME</span> <span class="o">=</span> <span class="s1">'chatbot-todolist-ctx'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">CTX_TBL_NAME</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">chatbot-todolist-ctx</span><span class="dl">'</span><span class="p">;</span>
 
 <span class="c1">// restore conversation context from dynamodb</span>
 <span class="kd">function</span> <span class="nx">restoreCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Trying to restore context for sender"</span><span class="p">,</span> <span class="nx">sender</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Trying to restore context for sender</span><span class="dl">"</span><span class="p">,</span> <span class="nx">sender</span><span class="p">);</span>
 
   <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
     <span class="na">TableName</span><span class="p">:</span> <span class="nx">CTX_TBL_NAME</span><span class="p">,</span>
     <span class="na">Key</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s1">'s'</span><span class="p">:</span> <span class="nx">sender</span>
+      <span class="dl">'</span><span class="s1">s</span><span class="dl">'</span><span class="p">:</span> <span class="nx">sender</span>
     <span class="p">}</span>
   <span class="p">};</span>
 
@@ -460,13 +477,13 @@
 <span class="c1">// persist context to dynamodb</span>
 <span class="kd">function</span> <span class="nx">persistCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Persisting context for sender"</span><span class="p">,</span> <span class="nx">sender</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Persisting context for sender</span><span class="dl">"</span><span class="p">,</span> <span class="nx">sender</span><span class="p">);</span>
 
   <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
       <span class="na">TableName</span><span class="p">:</span> <span class="nx">CTX_TBL_NAME</span><span class="p">,</span>
       <span class="na">Item</span><span class="p">:{</span>
-          <span class="s1">'s'</span><span class="p">:</span> <span class="nx">sender</span><span class="p">,</span>
-          <span class="s1">'x'</span><span class="p">:</span> <span class="nx">context</span>
+          <span class="dl">'</span><span class="s1">s</span><span class="dl">'</span><span class="p">:</span> <span class="nx">sender</span><span class="p">,</span>
+          <span class="dl">'</span><span class="s1">x</span><span class="dl">'</span><span class="p">:</span> <span class="nx">context</span>
       <span class="p">}</span>
   <span class="p">};</span>
 
@@ -475,10 +492,10 @@
 
 <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">botBuilder</span><span class="p">(</span><span class="nx">request</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request:'</span><span class="p">,</span> <span class="nx">request</span><span class="p">)</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Request:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">request</span><span class="p">)</span>
 
   <span class="c1">// we're going to store the context under this key</span>
-  <span class="kd">var</span> <span class="nx">sender</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">type</span> <span class="o">+</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="nx">request</span><span class="p">.</span><span class="nx">sender</span> <span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">sender</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">type</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">.</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">request</span><span class="p">.</span><span class="nx">sender</span> <span class="p">;</span>
 
   <span class="k">return</span> <span class="nx">restoreCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">existingCtx</span><span class="p">)</span> <span class="p">{</span>
 
@@ -497,7 +514,7 @@
 
     <span class="k">return</span> <span class="nx">sendMessageToWatson</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="c1">// not shown here, but very similar to the first code example</span>
     <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Response:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Response:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
 
       <span class="c1">// persist the updated context, then reply to the user</span>
       <span class="k">return</span> <span class="nx">persistCtx</span><span class="p">(</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">context</span><span class="p">)</span>
@@ -507,10 +524,11 @@
     <span class="p">})</span>
   <span class="p">})</span>
   <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> 
-    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error:'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Error:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">error</span><span class="p">));</span>
     <span class="k">return</span> <span class="nx">DEFAULT_ERR_REPLY</span><span class="p">;</span>
   <span class="p">});</span>
-<span class="p">});</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="p">});</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>The code above should be easy to follow. I’ve added two functions: <code class="highlighter-rouge">restoreCtx</code> attempts to load a previous context and <code class="highlighter-rouge">persistCtx</code> saves the updated context. Now we restore the user’s context at the beginning of the request if available and we save it at the end of each request with the updated values from Watson. More specifically, we store a context for each sender id. To avoid id clashes between different message channels, we also include the type (message channel) as part of the primary key. Now all that’s left is to crate a new table ‘chatbot-todolist-ctx’ in DynamoDB. The partition (hash) key is named ‘s’; there is no sort key. We simply store the context object returned from the Watson API in column ‘x’.</p>
 
@@ -572,16 +590,18 @@
 </footer>
 
 
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45866113-2"></script>
+
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-45866113-2', 'auto');
-  ga('send', 'pageview');
-
+  window['ga-disable-UA-45866113-2'] = true;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
 </script>
+
+<script src="/blog/js/vendor/cookieconsent.min.c975ea3858dd8c7347d46343fb510ed236efbde6c0069cc6283eba7639d47e22a560c1391c6314247a0269e1380f93d31b662c4897fa770ab2514bd0bd2d2f68.js" data-cfasync="false"></script>
+<script src="/blog/js/vendor/main.min.29e9a6941852b54310054e8af97cdded108192255658c2026001bb5ac7723e3ec11674a57a00352cf21dec4c3805a7755ee6009e8d8ca7d0578cfa3fe882f188.js"></script>
+
 
 
 

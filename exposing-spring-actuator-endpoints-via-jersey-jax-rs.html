@@ -9,11 +9,13 @@
   <title>Exposing Spring Actuator endpoints via Jersey</title>
   <meta name="description" content="  Transparency makes the difference between a system that improves over time in production and one that stagnates on decays.[1]Spring Boot comes with a numbe...">
 
+  <link rel="stylesheet" href="/blog/css/vendor/cookieconsent.min.cd0d0b6e50ff01ff2f3a9a70d7cfb66a7c6cb9acf7a566325568be6d3bd31fc4.css">
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://ruhkopf.name/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs">
   <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
 
   <script src="/blog/js/vendor/picturefill.min.js"></script>
+
 </head>
 
 
@@ -52,6 +54,20 @@
         
           
           
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
                     
         
                     
@@ -265,39 +281,39 @@ There are workarounds that are only based on configuration and do not require an
 61
 62
 </pre></td><td class="code"><pre><span class="nd">@Path</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span>
-<span class="nd">@Produces</span><span class="o">({</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span> <span class="o">})</span>
+<span class="nd">@Produces</span><span class="o">({</span> <span class="nc">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span> <span class="o">})</span>
 <span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ActuatorEndpoints</span>
 <span class="o">{</span>
   <span class="nd">@Autowired</span>
-  <span class="kd">private</span> <span class="n">HealthEndpoint</span> <span class="n">health</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">HealthEndpoint</span> <span class="n">health</span><span class="o">;</span>
 
   <span class="nd">@Autowired</span>
-  <span class="kd">private</span> <span class="n">MetricsEndpoint</span> <span class="n">metrics</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">MetricsEndpoint</span> <span class="n">metrics</span><span class="o">;</span>
   
   <span class="nd">@Autowired</span>
-  <span class="kd">private</span> <span class="n">DumpEndpoint</span> <span class="n">dump</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">DumpEndpoint</span> <span class="n">dump</span><span class="o">;</span>
 
   
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/health"</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getHealth</span><span class="o">()</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">getHealth</span><span class="o">()</span>
   <span class="o">{</span>
     <span class="k">return</span> <span class="n">health</span><span class="o">.</span><span class="na">invoke</span><span class="o">();</span>
   <span class="o">}</span>
   
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/metrics"</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getMetrics</span><span class="o">()</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">getMetrics</span><span class="o">()</span>
   <span class="o">{</span>
     <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">metrics</span><span class="o">.</span><span class="na">invoke</span><span class="o">();</span>
   <span class="o">}</span>
 
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/metrics/{name:.*}"</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getMetric</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"name"</span><span class="o">)</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">getMetric</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"name"</span><span class="o">)</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">)</span>
   <span class="o">{</span>
-    <span class="kd">final</span> <span class="n">Object</span> <span class="n">value</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">metrics</span><span class="o">.</span><span class="na">invoke</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+    <span class="kd">final</span> <span class="nc">Object</span> <span class="n">value</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">metrics</span><span class="o">.</span><span class="na">invoke</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">value</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
     <span class="o">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nf">NotFoundException</span><span class="o">(</span><span class="s">"No such metric: "</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
@@ -307,16 +323,16 @@ There are workarounds that are only based on configuration and do not require an
   
   <span class="nd">@GET</span>
   <span class="nd">@Path</span><span class="o">(</span><span class="s">"/dump"</span><span class="o">)</span>
-  <span class="nd">@Produces</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">TEXT_PLAIN</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getThreadDump</span><span class="o">()</span>
+  <span class="nd">@Produces</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">TEXT_PLAIN</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">getThreadDump</span><span class="o">()</span>
   <span class="o">{</span>
     <span class="k">return</span> <span class="k">new</span> <span class="nf">StreamingOutput</span><span class="o">()</span>
     <span class="o">{</span>
       <span class="nd">@Override</span>
-      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">write</span><span class="o">(</span><span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">os</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">WebApplicationException</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">write</span><span class="o">(</span><span class="kd">final</span> <span class="nc">OutputStream</span> <span class="n">os</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span><span class="o">,</span> <span class="nc">WebApplicationException</span>
       <span class="o">{</span>
-        <span class="kd">final</span> <span class="n">Writer</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedWriter</span><span class="o">(</span><span class="k">new</span> <span class="n">OutputStreamWriter</span><span class="o">(</span><span class="n">os</span><span class="o">));</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">ThreadInfo</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">dump</span><span class="o">.</span><span class="na">invoke</span><span class="o">())</span>
+        <span class="kd">final</span> <span class="nc">Writer</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BufferedWriter</span><span class="o">(</span><span class="k">new</span> <span class="nc">OutputStreamWriter</span><span class="o">(</span><span class="n">os</span><span class="o">));</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="nc">ThreadInfo</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">dump</span><span class="o">.</span><span class="na">invoke</span><span class="o">())</span>
         <span class="o">{</span>
           <span class="n">writer</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
         <span class="o">}</span>
@@ -325,14 +341,16 @@ There are workarounds that are only based on configuration and do not require an
       <span class="o">}</span>
     <span class="o">};</span>
   <span class="o">}</span>
-<span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>You can even disable the Spring MVC endpoints by setting a property. If you use the Actuator endpoints as shown above, they will still work.</p>
 
 <figure class="highlight"><pre><code class="language-text" data-lang="text"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
 </pre></td><td class="code"><pre># disable spring mvc endpoints
-endpoints.enabled=false</pre></td></tr></tbody></table></code></pre></figure>
+endpoints.enabled=false
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Here’s an example output of the health Actuator mapped under <em>http://localhost:8080/health</em>.</p>
 
@@ -345,13 +363,14 @@ endpoints.enabled=false</pre></td></tr></tbody></table></code></pre></figure>
 7
 8
 </pre></td><td class="code"><pre><span class="p">{</span><span class="w">
-  </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UP"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"diskSpace"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UP"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"free"</span><span class="p">:</span><span class="w"> </span><span class="mi">58559954944</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"threshold"</span><span class="p">:</span><span class="w"> </span><span class="mi">10485760</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UP"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"diskSpace"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UP"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"free"</span><span class="p">:</span><span class="w"> </span><span class="mi">58559954944</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"threshold"</span><span class="p">:</span><span class="w"> </span><span class="mi">10485760</span><span class="w">
   </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span></pre></td></tr></tbody></table></code></pre></figure>
+</span><span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>To conclude it’s easy to make use of the Spring Actuator endpoints without having to access them via Spring MVC.</p>
 
@@ -413,16 +432,18 @@ endpoints.enabled=false</pre></td></tr></tbody></table></code></pre></figure>
 </footer>
 
 
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45866113-2"></script>
+
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-45866113-2', 'auto');
-  ga('send', 'pageview');
-
+  window['ga-disable-UA-45866113-2'] = true;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
 </script>
+
+<script src="/blog/js/vendor/cookieconsent.min.c975ea3858dd8c7347d46343fb510ed236efbde6c0069cc6283eba7639d47e22a560c1391c6314247a0269e1380f93d31b662c4897fa770ab2514bd0bd2d2f68.js" data-cfasync="false"></script>
+<script src="/blog/js/vendor/main.min.29e9a6941852b54310054e8af97cdded108192255658c2026001bb5ac7723e3ec11674a57a00352cf21dec4c3805a7755ee6009e8d8ca7d0578cfa3fe882f188.js"></script>
+
 
 
 

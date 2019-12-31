@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Lessons learned when building Serverless web applications - Part 1</title>
+  <meta name="description" content="During the last couple of years my team has built different Serverless Web applications both on AWS and on Azure. In this series of posts, I would like to sh...">
+
+  <link rel="stylesheet" href="/blog/css/vendor/cookieconsent.min.cd0d0b6e50ff01ff2f3a9a70d7cfb66a7c6cb9acf7a566325568be6d3bd31fc4.css">
+  <link rel="stylesheet" href="/blog/css/main.css">
+  <link rel="canonical" href="http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-1">
+  <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+
+  <script src="/blog/js/vendor/picturefill.min.js"></script>
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Patrick Ruhkopf - Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          
+          <a class="page-link" href="/blog/contact/">Contact</a>
+          
+                    
+        
+          
+          
+                    
+        
+          
+          
+                    
+        
+          
+          
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Lessons learned when building Serverless web applications - Part 1</h1>
+    <p class="post-meta"><time datetime="2019-12-30T00:00:00-05:00" itemprop="datePublished">Dec 30, 2019</time>
+    • <a href="tags/serverless">serverless</a>
+    
+    • <a href="tags/faas">faas</a>
+    
+    • <a href="tags/api">api</a>
+    
+    • <a href="tags/back-end">back-end</a>
+    
+    • <a href="tags/jamstack">jamstack</a>
+    
+    • <a href="tags/javascript">javascript</a>
+    
+    • <a href="tags/typescript">typescript</a>
+    
+    • <a href="tags/nodejs">nodejs</a>
+    
+    • <a href="tags/nosql">nosql</a>
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>During the last couple of years my team has built different Serverless Web applications both on AWS and on Azure. In this series of posts, I would like to share a few lessons learned and patterns that have worked very well for us.
+<!--more--></p>
+
+<h2 id="the-ingredients">The ingredients</h2>
+
+<p>Our Serverless application usually consists of the following components:</p>
+
+<ul>
+  <li>The back-end: Web Services API (REST)</li>
+  <li>The front-end: Single page application / Native mobile client</li>
+  <li>Pipeline for Continuous Integration / Deployment</li>
+  <li>Authentication with OAuth 2 and JSON Web Tokens</li>
+  <li>Content Management Service: To maintain and serve content</li>
+</ul>
+
+<p>You are reading part 1 of this series, where I’m going to focus on the back-end.</p>
+
+<h3 id="choosing-one-language">Choosing one language</h3>
+<p>Many articles about Microservices and Serverless promote the fact that you can use different programming languages to implement APIs. This is a double-edged sword. On the one hand it gives you flexibility to use the right tool for the job. It’s also great, if you already have many diverse teams. On the other hand, keep in mind that the more languages you introduce, the more effort you will have to address common concerns, differences in runtime behavior and configuration format, etc.</p>
+
+<p>What worked well for us is to settle on a main language and only make exceptions for special cases. Such cases could be code for machine learning running on Python or functions that require high performance using Rust. However, the vast majority of our code uses TypeScript (JavaScript). This has the added benefit that we can use the same language in the back-end and front-end, which makes full-stack development much more streamlined.</p>
+
+<h2 id="the-api-specification---openapi">The API specification - OpenAPI</h2>
+
+<p>We chose to follow a design first approach. This means our API endpoints and models are described by using the <a href="https://swagger.io/docs/specification/about/">OpenAPI specification</a>. We then <a href="https://github.com/OpenAPITools/openapi-generator">generate code</a> based on the specification. Because we use the same language for our back-end and front-end (TypeScript), we generate the model interfaces only once to a directory that is shared between both tiers. Our NPM target that triggers the code generation looks similar to the following example:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"generate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rm -rf ../shared/generated &amp;&amp; openapi-generator generate -i openapi.yaml -g typescript-angular --type-mappings object=any -o ../shared/generated -Dmodels &amp;&amp; npm run lint:shared"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint:shared"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tslint -c ../shared/tslint.json --project tsconfig.json --fix '../shared/**/*.ts'"</span><span class="p">,</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>In addition to generating the models, it also runs TSLint to clean up the generated code.</p>
+
+<h2 id="the-api-implementation---function-as-a-service-faas">The API implementation - Function as a service (FaaS)</h2>
+
+<p>FaaS makes it really easy to develop and execute business logic. All you have to do is write your code and deploy it to your cloud provider. The cloud provider is then responsible to execute the functions in a secure, fault tolerant and scalable environment. This is pretty awesome, because you no longer need to maintain servers, scaling happens automatically, and you pay only for what you use (per request). Functions are triggered based on events. This could be an http event for API calls, a database event for record updates, an IOT event, etc.</p>
+
+<p>Cloud providers typically run your code inside containers under the hood. In order to allow for automatic and horizontal scaling, the provider will start and terminate containers on demand. So, there is no guarantee that the same container is used during the next function invocation. You need to consider this when architecting your application.</p>
+
+<h3 id="cold-starts">Cold starts</h3>
+<p>When a new container is created, your function is started from scratch (cold start). This means that all global state is empty. You may want to consider this when selecting languages and frameworks. For example, a traditional Java / Spring Framework based application will take a long time to initialize. Long startup times don’t play well in a FaaS environment. If your function initialization takes a long time, your users will experience an unpleasant latency, or you have to do workarounds such as regular warmup calls.</p>
+
+<h3 id="state-or-the-lack-of">State (or the lack of)</h3>
+<p>Your functions should be stateless as much as possible, because you cannot rely on global state or the file system. Where traditional applications often use global variables, memory or the file system, with FaaS the goal is to isolated state, i.e. move it elsewhere. Here are a few practical examples.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Use case</th>
+      <th>Traditional</th>
+      <th>Serverless</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>User Session Management</td>
+      <td>In memory</td>
+      <td>NoSQL database</td>
+    </tr>
+    <tr>
+      <td>Object Locks</td>
+      <td>In memory (for example using “synchronized” in Java)</td>
+      <td>NoSQL database/cache</td>
+    </tr>
+    <tr>
+      <td>Media files</td>
+      <td>Local file system</td>
+      <td>Blob storage</td>
+    </tr>
+    <tr>
+      <td>User authentication state</td>
+      <td>In memory</td>
+      <td>JWT as part of request payload</td>
+    </tr>
+    <tr>
+      <td>Database authentication</td>
+      <td>In memory</td>
+      <td>Lambda execution role or Azure Managed Identities</td>
+    </tr>
+    <tr>
+      <td>Database connection</td>
+      <td>In memory</td>
+      <td>Aurora http connector</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>However, in practice there’s often still the need for global state. For example, a third party service may require an access token which you need to request first. This could be part of the initialization code that you run and you could store the result in a global/static variable. If a container is re-used (warm), then the token will already be available.</p>
+
+<p>It’s important to note that the container lifecycle and startup times are significantly different between <a href="https://aws.amazon.com/lambda/">AWS Lambda</a> and <a href="https://azure.microsoft.com/en-us/services/functions/">Azure Functions</a>. For example, Azure offers a premium plan, where at least one instance of your function application is always running. Think about the previous example, where your function requires an access token: Now you also have to check the token’s expiration date, because your function might run for several hours or days and therefore just requesting a new token during initialization will no longer work. Also in AWS functions are much more isolated and run independently where in Azure all functions of the same app are running together.</p>
+
+<p>This part of the Serverless world is unfortunately still very painful and time consuming. My recommendation is to write a common initialization-with-retry function that is thoroughly tested and generic enough so that it can be used for various initialization scenarios (e.g. retrieving access tokens, connecting to databases, …)</p>
+
+<h2 id="data-stores">Data stores</h2>
+
+<p>The need to isolate state is something to consider when choosing a database as well. Access patterns may change and certain databases might be better suited for a Serverless environment. For example, SQL databases usually require connection management, which, as we saw in the previous section, is not ideal. AWS addresses this with the <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html">Data API for Aurora Serverless</a>. Instead of a persisted connection, you can simply send http requests to run SQL statements. <a href="https://aws.amazon.com/dynamodb/">DynamoDB</a>, the AWS proprietary NoSQL database, also allows data manipulation via http requests without connection management.</p>
+
+<p>Sidenote: If you are concerned about vendor lock-in when choosing a NoSQL database, MongoDB might be a good choice. Both <a href="https://aws.amazon.com/blogs/aws/new-amazon-documentdb-with-mongodb-compatibility-fast-scalable-and-highly-available/">AWS</a> and <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction">Azure</a> offer managed databases with MongoDB compatibility.</p>
+
+<p>We typically use a NoSQL database such as <a href="https://aws.amazon.com/dynamodb/">AWS DynamoDB</a> or <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction">Azure CosmosDB</a> as the primary datastore that is accessed by our API. Optionally we add a full-text search service such as <a href="https://www.elastic.co/">Elasticsearch</a>, a cache service such as <a href="https://redis.io/">Redis</a> and/or a SQL database for reporting. Using a database that is offered as platform as a service (PaaS) really pays off, because those usually integrate well with your back-end functions. For example, it is very easy to configure a Lambda function that listens to DynamoDB changes and then indexes the data into Elasticsearch, Redis or a SQL reporting table. Similar you can configure an Azure function to be triggered by CosmosDB. This helps especially when implementing the <a href="https://martinfowler.com/bliki/CQRS.html">CQRS pattern</a> often found in event based systems.</p>
+
+<h2 id="the-api-gateway">The API Gateway</h2>
+
+<p>The <a href="https://aws.amazon.com/api-gateway/">API Gateway</a> / <a href="https://azure.microsoft.com/en-us/services/api-management/">API Management</a> helps us to expose our RESTful API to our clients. It translates the requests from the client into events and dispatches these events to our functions.</p>
+
+<p>You can decide how to map REST resources and methods to your functions. In a coarse-grained setup you would forward all requests from the gateway to only one (or a few) function(s). We’re using a fine-grained approach, where we map each http method of each REST resource to a different function. Here’s an example for an imaginary API for kittens:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"> /kittens
+ |__ GET            =&gt; KittensGetFn 
+ |__ POST           =&gt; KittensPostFn
+ |__ OPTIONS 
+ |__ /{kittenId} 
+      |__ GET       =&gt; KittenGetFn 
+      |__ PUT       =&gt; KittenPutFn
+      |__ DELETE    =&gt; KittenDeleteFn</code></pre></figure>
+
+<p>This gives us the most flexibility, as we can define execution rights, environment variables and configuration such as timeouts per function. This approach will of course result in a lot of functions, so maintainability becomes a concern. That’s why we make certain trade-offs. For example, we usually don’t deploy each function individually. Instead, for example we have a <code class="highlighter-rouge">kittens.js</code> file that contains all functions for maintaining kittens. This file along with its dependencies will be automatically deployed. (More information about our CI/CD pipeline setup will follow in a future post.) Similar we only have a few execution roles that are shared by most functions. However, some functions may require additional privileges. With our fine-grained setup, we can give those a dedicated role with more access rights.</p>
+
+<p>Unfortunately in Azure most configuration is done at the function application level (which concerns all functions) and not on individual functions.</p>
+
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>In this first part of the Serverless series I’ve provided patterns and tips for the back-end API. I hope to post the next part soon. If you have feedback, questions or are missing some information, I would love to hear from you (via <a href="http://twitter.com/restfulhead">Twitter @restfulhead</a> or see <a href="/contact">contact</a>).</p>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Patrick Ruhkopf - Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Patrick Ruhkopf - Blog</li>
+          <li>subscribe <a href="/blog/feed.xml">via RSS</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/restfulhead"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">restfulhead</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/restfulhead"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">restfulhead</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thoughts on programming, application design and (someday) photography. 
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45866113-2"></script>
+
+<script>
+  window['ga-disable-UA-45866113-2'] = true;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+</script>
+
+<script src="/blog/js/vendor/cookieconsent.min.c975ea3858dd8c7347d46343fb510ed236efbde6c0069cc6283eba7639d47e22a560c1391c6314247a0269e1380f93d31b662c4897fa770ab2514bd0bd2d2f68.js" data-cfasync="false"></script>
+<script src="/blog/js/vendor/main.min.29e9a6941852b54310054e8af97cdded108192255658c2026001bb5ac7723e3ec11674a57a00352cf21dec4c3805a7755ee6009e8d8ca7d0578cfa3fe882f188.js"></script>
+
+
+
+
+
+  </body>
+
+</html>
