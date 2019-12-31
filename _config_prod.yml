@@ -23,6 +23,12 @@ markdown: kramdown
 # Plugins
 gems: [jekyll-picture-tag]
 
+sass:
+  style: compressed
+
+assets:
+  digest: true
+  
 # Picture settings
 picture:
   source: "assets/images/_fullsize"
