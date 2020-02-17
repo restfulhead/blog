@@ -37,6 +37,26 @@ body {
   flex-direction: column;
   flex-basis: 100%;
   padding: 1em;
+
+  h2 {
+    color: $main-header-color;
+    border-bottom: 5px solid $main-header-color;
+    margin-bottom: 0.2em;
+  }
+  
+  h3 {
+    margin-bottom: 0.1em;
+  }
+
+  p {
+    margin-top: 0.25em;
+  }
+
+  .fas {
+    font-size: 0.8em;
+    vertical-align: middle;
+    padding-bottom: 0.2em;
+  }
 }
 
 .column-sidebar {
@@ -88,27 +108,46 @@ body {
   padding: 0 2em;
 }
 
-.sidebar-skills {
+.sidebar-content {
   padding: 0 2em;
+  font-size: 0.8em;
 }
 
 .list-unstyled {
   padding-left: 0;
   list-style: none;
+
+  li {
+    margin-bottom: 0.8em;
+  }
 }
 
-.list-unstyled li {
-  margin-bottom: 0.8em;
+.list-styled {
+  li {
+    margin-bottom: 0.8em;
+  }
+}
+
+.li-sub {
+  font-size: 0.8em;
+}
+
+.subtle {
+  font-size: 0.8em;
+  color: $sidebar-subtle-color;
 }
 
 .mr-05 {
   margin-right: 0.5em;
 }
 
+.ml-1 {
+  margin-left: 1rem;
+}
+
 
 @media screen and (min-width: 800px) {
   .column-sidebar {
-    flex: 0 0 15em;
     flex: 1;
   }
   .column-main {
@@ -125,7 +164,6 @@ body {
 
 @media print {
   .column-sidebar {
-    flex: 0 0 15em;
     flex: 1;
   }
   .column-main {
@@ -137,8 +175,9 @@ body {
   }
   .sidebar-contact {
     padding: 1em;
+    padding-top: 0;
   }
-  .sidebar-skills {
+  .sidebar-content {
     padding: 1em;
   }
 }

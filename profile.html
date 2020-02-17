@@ -3,8 +3,6 @@ layout: profile
 permalink: /profile/
 ---
 
-
-
   <div class="row">
     <div class="column-sidebar">
 
@@ -39,13 +37,27 @@ permalink: /profile/
 
       </div>
 
-      <div class="sidebar-skills">
-        <h2>Skills</h2>
+      <div class="sidebar-content">
+        <h2>
+          <i class="fas fa-certificate"></i>
+          Certifications
+        </h2>
         <ul class="list-unstyled">
-          {% for skill in site.data.profile.skills %}
-          <li>{{ skill }}</li>
+          {% for cert in site.data.profile.certifications %}
+          <li>{{ cert.title }}</li>
           {% endfor %}
         </ul>
+
+        <h2>
+          <i class="fas fa-graduation-cap"></i>
+          Education
+        </h2>
+        <ul class="list-unstyled">
+            {% for ed in site.data.profile.education %}
+            <li>{{ ed.title }} <br/><span class="subtle">{{ ed.desc }}</span></li>
+            {% endfor %}
+        </ul>
+        
       </div>
 
     </div>
@@ -53,5 +65,17 @@ permalink: /profile/
       <h2>Right Column</h2>
 
       <p>Zombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsum</p>
+
+
+      <h2>
+        <i class="fas fa-certificate"></i>
+        Skills
+      </h2>
+      <ul class="list-unstyled">
+        {% for skill in site.data.profile.skills %}
+        <li>{{ skill.title }}<br/><span class="li-sub">{{skill.desc}}</span></li>
+        {% endfor %}
+      </ul>
+      
     </div>
   </div>
