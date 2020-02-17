@@ -1,0 +1,57 @@
+---
+layout: profile
+permalink: /profile/
+---
+
+
+
+  <div class="row">
+    <div class="column-sidebar">
+
+      <div class="sidebar-header">
+        <h1>
+          <i class="fas fa-user"></i>
+          {{ site.data.profile.name}}
+        </h1>
+        <h2>{{ site.data.profile.role}}</h2>
+      </div>
+      <div class="sidebar-contact">
+        <ul class="list-unstyled">
+          <li><i class="fas fa-envelope mr-05"></i>
+          <a href="mailto:{{ site.data.profile.email}}">{{ site.data.profile.email}}</a>
+          </li>
+          <li><i class="fas fa-phone mr-05"></i>
+          <a href="tel:{{ site.data.profile.phone}}">{{ site.data.profile.phone}}</a>
+          </li>
+          <li><i class="fab fa-linkedin mr-05"></i>
+          <a href="https://linkedin.com/in/{{ site.data.profile.linkedin}}" target="_blank">{{ site.data.profile.linkedin}}</a>
+          </li>
+          <li><i class="fab fa-github mr-05"></i>
+          <a href="https://github.com/{{ site.data.profile.github}}" target="_blank">{{ site.data.profile.github}}</a>
+          </li>
+          <li><i class="fab fa-blogger-b mr-05"></i>
+            <a href="https://{{ site.data.profile.blog}}" target="_blank">{{ site.data.profile.blog}}</a>
+          </li>  
+          <li><i class="fab fa-twitter mr-05"></i>
+          <a href="https://twitter.com/{{ site.data.profile.twitter}}" target="_blank">{{ site.data.profile.twitter}}</a>
+          </li>
+        </ul>
+
+      </div>
+
+      <div class="sidebar-skills">
+        <h2>Skills</h2>
+        <ul class="list-unstyled">
+          {% for skill in site.data.profile.skills %}
+          <li>{{ skill }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+    <div class="column-main">
+      <h2>Right Column</h2>
+
+      <p>Zombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsumZombie ipsum</p>
+    </div>
+  </div>
