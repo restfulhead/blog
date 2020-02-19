@@ -77,23 +77,18 @@ permalink: /profile/
         Professional Experience
       </h2>
 
-      {% for experience in site.data.profile.experiences %}
-      <h3 class="dense">{{ experience.title }} | {{ experience.company }} | <span class="subtle-main">{{experience.date}}</span></h3>
-      <div class="list-styled dense">
-        <ul>
-          {% for desc in experience.desc %}
-          <li>{{ desc.title }}
-            <ul>
-              {% for point in desc.points %}
-              <li>{{ point }}</li>
-              {% endfor %}
-            </ul>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
+      {% for experience in site.data.profile.recentExperiences %}
+        {% include profile-experience.html %}
       {% endfor %}
+
+      <button id="read-more-button" class="light-button">Display more...</button>
       
+      <div id="read-more">
+        {% for experience in site.data.profile.moreExperiences %}
+          {% include profile-experience.html %}
+        {% endfor %}
+      </div>
+
       <h2>
         <i class="fas fa-rocket"></i>
         Freelance and side projects

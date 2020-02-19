@@ -39,12 +39,12 @@ body {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
-  padding: 1em;
+  padding: 0 1em;
 
   h2 {
     color: $main-header-color;
     border-bottom: 5px solid $main-header-color;
-    margin-bottom: 0.2em;
+    margin-bottom: 0;
   }
   
   h3 {
@@ -99,6 +99,7 @@ body {
 
   h1 {
     margin: 0;
+    font-size: 1.6em;
   }
   h2 {
     font-size: 1.2em;
@@ -114,6 +115,11 @@ body {
 .sidebar-content {
   padding: 0 2em;
   font-size: 0.8em;
+
+  h2 {
+    margin-top: 1.2em;
+    margin-bottom: 0;
+  }
 }
 
 .list-unstyled {
@@ -163,6 +169,25 @@ body {
   margin-left: 1rem;
 }
 
+
+.light-button {
+  font-size: 1.2em;
+  padding: 0;
+  line-height: 0.1em;
+  height: 1.6em;
+  color: $sidebar-color;
+  background-color: $sidebar-bg-color;
+  border: none;
+  border-radius: 10em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.light-button:hover {
+  background-color: $main-header-color
+}
 
 @media screen and (min-width: 800px) {
   .column-sidebar {
