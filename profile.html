@@ -3,6 +3,8 @@ layout: profile
 permalink: /profile/
 ---
 
+
+
   <div class="row">
     <div class="column-sidebar">
 
@@ -81,13 +83,13 @@ permalink: /profile/
         {% include profile-experience.html %}
       {% endfor %}
 
-      <button id="read-more-button" class="light-button">Display more...</button>
-      
-      <div id="read-more">
+      <div id="read-more-content" class="hidden">
         {% for experience in site.data.profile.moreExperiences %}
           {% include profile-experience.html %}
         {% endfor %}
       </div>
+
+      <button id="read-more-button" class="light-button" onclick="toggleReadmore()">Show more...</button>
 
       <h2>
         <i class="fas fa-rocket"></i>
@@ -101,3 +103,18 @@ permalink: /profile/
 
     </div>
   </div>
+
+  <script>
+    function toggleReadmore() {
+      var moreText = document.getElementById("read-more-content");
+      var btnText = document.getElementById("read-more-button");
+    
+      if (moreText.style.display === "inline") {
+        btnText.innerHTML = "Show more..."; 
+        moreText.style.display = "none";
+      } else {
+        btnText.innerHTML = "Show less..."; 
+        moreText.style.display = "inline";
+      }
+    }
+    </script>

@@ -175,6 +175,8 @@ body {
   padding: 0;
   line-height: 0.1em;
   height: 1.6em;
+  width: 10em;
+  margin: 0 auto;
   color: $sidebar-color;
   background-color: $sidebar-bg-color;
   border: none;
@@ -187,6 +189,10 @@ body {
 
 .light-button:hover {
   background-color: $main-header-color
+}
+
+.hidden {
+  display: none;
 }
 
 @media screen and (min-width: 800px) {
