@@ -126,8 +126,15 @@ body {
 }
 
 .list-styled {
+  ul {
+    margin-left: 1.25em;
+    padding-left: 0;
+  }
   li {
-    margin-bottom: 0.8em;
+    margin: 0.2em 0;
+  }
+  > ul > li {
+    margin-top: 0.6em;
   }
 }
 
@@ -139,7 +146,11 @@ body {
   font-weight:600;
 }
 
-.subtle {
+.subtle-main {
+  font-size: 0.8em;
+}
+
+.subtle-sidebar {
   font-size: 0.8em;
   color: $sidebar-subtle-color;
 }

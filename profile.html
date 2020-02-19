@@ -54,7 +54,7 @@ permalink: /profile/
         </h2>
         <ul class="list-unstyled">
             {% for ed in site.data.profile.education %}
-            <li>{{ ed.title }} <br/><span class="subtle">{{ ed.desc }}</span></li>
+            <li>{{ ed.title }} <br/><span class="subtle-sidebar">{{ ed.desc }}</span></li>
             {% endfor %}
         </ul>
         
@@ -68,7 +68,7 @@ permalink: /profile/
       </h2>
       <ul class="list-unstyled dense">
         {% for skill in site.data.profile.skills %}
-        <li><span class="highlight">{{ skill.title }}</span> &mdash; <span class="smaller">{{skill.desc}}</span></li>
+        <li><span class="highlight">{{ skill.title }}</span> &mdash; {{skill.desc}}</li>
         {% endfor %}
       </ul>
 
@@ -78,30 +78,31 @@ permalink: /profile/
       </h2>
 
       {% for experience in site.data.profile.experiences %}
-      <h3 class="dense">{{ experience.title }} {{ experience.company }} <span class="smaller">{{experience.date}}</span></h3>
-      <ul class="list-styled dense">
-        {% for desc in experience.desc %}
-        <li>{{ desc.title }}
-          <ul class="list-styled">
-            {% for point in desc.points %}
-            <li>{{ point }}</li>
-            {% endfor %}
-          </ul>
-        </li>
+      <h3 class="dense">{{ experience.title }} | {{ experience.company }} | <span class="subtle-main">{{experience.date}}</span></h3>
+      <div class="list-styled dense">
+        <ul>
+          {% for desc in experience.desc %}
+          <li>{{ desc.title }}
+            <ul>
+              {% for point in desc.points %}
+              <li>{{ point }}</li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+      
+      <h2>
+        <i class="fas fa-rocket"></i>
+        Freelance and side projects
+      </h2>
+      <ul class="list-unstyled dense">
+        {% for freelance in site.data.profile.freelance %}
+        <li><span class="highlight">{{ freelance.title }}</span> &mdash; {{freelance.desc}}</li>
         {% endfor %}
       </ul>
-      {% endfor %}
 
-      experience:
-  - title: Senior Solution Architect
-    company: Arvato Systems North America
-    date: Apr 2010 - Present
-    description:
-      - level 1
-        - level 2
-        - level 2
-      - level 1
-
-      
     </div>
   </div>
