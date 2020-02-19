@@ -5,12 +5,15 @@
 
 @import "profile-theme";
 
+html { font-size:62.5%; }
+
 *, *:before, *:after {
   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
 
 body {
   font-family: 'Raleway', sans-serif;
+  font-size: 1.8em;
   color: #545e6c;
   background: $body-bg-color;
 }
@@ -128,8 +131,12 @@ body {
   }
 }
 
-.li-sub {
-  font-size: 0.8em;
+.dense {
+  letter-spacing: -.025em;
+}
+
+.highlight {
+  font-weight:600;
 }
 
 .subtle {
@@ -163,6 +170,9 @@ body {
 }
 
 @media print {
+  body {
+    font-size: 1.6em;
+  }
   .column-sidebar {
     flex: 1;
   }
