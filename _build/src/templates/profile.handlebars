@@ -1,0 +1,98 @@
+<div class="row">
+  <div class="column-sidebar">
+
+    <div class="sidebar-header">
+      <h1>
+        <i class="fas fa-user"></i>
+        {{ profile.name }}
+      </h1>
+      <h2>{{ profile.role }}</h2>
+    </div>
+    <div class="sidebar-contact">
+      <ul class="list-unstyled">
+        <li><i class="fas fa-envelope mr-05"></i>
+        <a href="mailto:{{ profile.email}}">{{ profile.email}}</a>
+        </li>
+        <li><i class="fas fa-phone mr-05"></i>
+        <a href="tel:{{ profile.phone}}">{{ profile.phone}}</a>
+        </li>
+        <li><i class="fab fa-linkedin mr-05"></i>
+        <a href="https://linkedin.com/in/{{ profile.linkedin}}" target="_blank">{{ profile.linkedin}}</a>
+        </li>
+        <li><i class="fab fa-github mr-05"></i>
+        <a href="https://github.com/{{ profile.github}}" target="_blank">{{ profile.github}}</a>
+        </li>
+        <li><i class="fab fa-blogger-b mr-05"></i>
+          <a href="https://{{ profile.blog}}" target="_blank">{{ profile.blog}}</a>
+        </li>  
+        <li><i class="fab fa-twitter mr-05"></i>
+        <a href="https://twitter.com/{{ profile.twitter}}" target="_blank">{{ profile.twitter}}</a>
+        </li>
+      </ul>
+
+    </div>
+
+    <div class="sidebar-content">
+      <h2>
+        <i class="fas fa-certificate"></i>
+        Certifications
+      </h2>
+      <ul class="list-unstyled">
+        {% for cert in profile.certifications %}
+        <li>{{ cert.title }}</li>
+        {% endfor %}
+      </ul>
+
+      <h2>
+        <i class="fas fa-graduation-cap"></i>
+        Education
+      </h2>
+      <ul class="list-unstyled">
+          {% for ed in profile.education %}
+          <li>{{ ed.title }} <br/><span class="subtle-sidebar">{{ ed.desc }}</span></li>
+          {% endfor %}
+      </ul>
+      
+    </div>
+
+  </div>
+  <div class="column-main">
+    <h2>
+      <i class="fas fa-flask"></i>
+      Skills
+    </h2>
+    <ul class="list-unstyled dense">
+      {% for skill in profile.skills %}
+      <li><span class="highlight">{{ skill.title }}</span> &mdash; {{skill.desc}}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>
+      <i class="fas fa-user-tie"></i>
+      Professional Experience
+    </h2>
+
+    {% for experience in profile.recentExperiences %}
+      {% include profile-experience.html %}
+    {% endfor %}
+
+    <div id="read-more-content" class="hidden">
+      {% for experience in profile.moreExperiences %}
+        {% include profile-experience.html %}
+      {% endfor %}
+    </div>
+
+    <button id="read-more-button" class="light-button" onclick="toggleReadmore()">Show more...</button>
+
+    <h2>
+      <i class="fas fa-rocket"></i>
+      Freelance and side projects
+    </h2>
+    <ul class="list-unstyled dense">
+      {% for freelance in profile.freelance %}
+      <li><span class="highlight">{{ freelance.title }}</span> &mdash; {{freelance.desc}}</li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</div>

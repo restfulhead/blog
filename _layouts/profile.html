@@ -8,10 +8,54 @@
     </header>
 
     <div class="pageWrapper">
-      <div class="profileContainer">
-      {{ content }}
+      <div id="profileContainer">
+        <h2>Loading...</h2>
       </div>
     </div>
+
+    <script>
+      const p = ''
+
+      console.log('{{ site.data.hbcfg.profile.s }}')
+      console.log('{% include hb-context/profile.ctx %}')
+
+      const s = forge.util.hexToBytes('{{ site.data.hbcfg.profile.s }}');
+      const d = forge.util.hexToBytes('{% include hb-context/profile.ctx %}');
+      const k = forge.pkcs5.pbkdf2(p, s, 1024, 16);
+      const iv = forge.random.getBytesSync(32);
+      
+      var decipher = forge.cipher.createDecipher('AES-CBC', k);
+      decipher.start({iv: iv});
+      decipher.update(forge.util.createBuffer(d));
+      var result = decipher.finish(); // check 'result' for true/false
+
+      if (!result) {
+        console.error('Wrong password');
+      }
+      console.log(decipher.output.toHex())
+
+
+      function toggleReadmore() {
+        var moreText = document.getElementById("read-more-content");
+        var btnText = document.getElementById("read-more-button");
+      
+        if (moreText.style.display === "inline") {
+          btnText.innerHTML = "Show more..."; 
+          moreText.style.display = "none";
+        } else {
+          btnText.innerHTML = "Show less..."; 
+          moreText.style.display = "inline";
+        }
+      }
+
+      var template = Handlebars.template(
+        {% include hb-templates/profile.hb.js %}
+      )
+      var context = { profile: { name: "My New Post" }};
+      var html = template(context);
+      document.getElementById('profileContainer').innerHTML = html
+
+    </script>
 
     {% include profile-footer.html %}
     
