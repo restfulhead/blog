@@ -3,3 +3,5 @@ _site
 .jekyll-cache
 .jekyll-metadata
 .DS_Store
+_includes/hb-context/profile.ctx
+_data/hbcfg/profile.json
