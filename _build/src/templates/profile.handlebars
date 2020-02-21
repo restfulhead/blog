@@ -49,10 +49,20 @@
       </h2>
       <ul class="list-unstyled">
           {{#each profile.education}}
-          <li>{{ title }} <br/><span class="subtle-sidebar">{{ desc }}</span></li>
+          <li>{{ title }} <br/><span class="subtle-sidebar">{{ breaklines desc }}</span></li>
           {{/each}}
       </ul>
       
+       <h2>
+        <i class="fas fa-rocket"></i>
+        Freelance / Side
+      </h2>
+      <ul class="list-unstyled dense">
+        {{#each profile.freelance}}
+        <li>{{ title }} <br/><span class="subtle-sidebar">{{ breaklines desc }}</span></li>
+        {{/each}}
+      </ul>
+
     </div>
 
   </div>
@@ -83,16 +93,6 @@
     </div>
 
     <button id="read-more-button" class="light-button" onclick="toggleReadmore()">Show more...</button>
-
-    <h2>
-      <i class="fas fa-rocket"></i>
-      Freelance and side projects
-    </h2>
-    <ul class="list-unstyled dense">
-      {{#each profile.freelance}}
-      <li><span class="highlight">{{ title }}</span> &mdash; {{desc}}</li>
-       {{/each}}
-    </ul>
 
   </div>
 </div>

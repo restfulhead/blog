@@ -3,13 +3,11 @@
   {% include profile-head.html %}
 
   <body>
-    <header>
-      <h1>{{ page.title }}</h1>
-    </header>
-
     <div class="pageWrapper">
       <div id="profileContainer">
         <h2>Loading...</h2>
+        <p>Please wait and note that a modern browser is required to view this page. If you continue to see this message, 
+          then you need to upgrade your browser or <a href="/contact">contact me</a> instead.</p>
       </div>
     </div>
 
@@ -59,6 +57,14 @@
       if (!profileData) {
         window.location.replace('/not-found?p=3');
       }
+
+      Handlebars.registerHelper('breaklines', function(text) {
+        text = Handlebars.Utils.escapeExpression(text);
+        if (text) {
+          text = text.replace('&lt;br/&gt;', '<br/>');
+        }
+        return new Handlebars.SafeString(text);
+      });
 
       Handlebars.partials["profile-experience"] =  Handlebars.template(
         {% include hb-templates/profile-experience.hb.js %}
