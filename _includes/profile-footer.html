@@ -1,3 +1,16 @@
-<footer>
-  <h2>Footer</h2>
-</footer>
+
+{% if jekyll.environment == "prod" %}
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45866113-2"></script>
+
+<script>
+  window['ga-disable-UA-45866113-2'] = true;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+</script>
+
+<script src="{{ "/js/vendor/cookieconsent.min.c975ea3858dd8c7347d46343fb510ed236efbde6c0069cc6283eba7639d47e22a560c1391c6314247a0269e1380f93d31b662c4897fa770ab2514bd0bd2d2f68.js" | prepend: site.baseurl }}" data-cfasync="false"></script>
+<script src="{{ "/js/vendor/main.min.29e9a6941852b54310054e8af97cdded108192255658c2026001bb5ac7723e3ec11674a57a00352cf21dec4c3805a7755ee6009e8d8ca7d0578cfa3fe882f188.js" | prepend: site.baseurl }}"></script>
+
+{% endif %}
+

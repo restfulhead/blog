@@ -14,25 +14,33 @@
     </div>
 
     <script>
-      const p = ''
+      const fIdx = window.location.href.indexOf('#');
+      const p = fIdx >= 0 ? window.location.href.substr(fIdx + 1) : undefined
 
-      console.log('{{ site.data.hbcfg.profile.s }}')
-      console.log('{% include hb-context/profile.ctx %}')
+      if (!p) {
+        window.location.replace('/not-found?p=0');
+      }
 
       const s = forge.util.hexToBytes('{{ site.data.hbcfg.profile.s }}');
+      const iv = forge.util.hexToBytes('{{ site.data.hbcfg.profile.iv }}');
       const d = forge.util.hexToBytes('{% include hb-context/profile.ctx %}');
-      const k = forge.pkcs5.pbkdf2(p, s, 1024, 16);
-      const iv = forge.random.getBytesSync(32);
+      const k = forge.pkcs5.pbkdf2(p, s, 100000, 32);
       
-      var decipher = forge.cipher.createDecipher('AES-CBC', k);
-      decipher.start({iv: iv});
-      decipher.update(forge.util.createBuffer(d));
-      var result = decipher.finish(); // check 'result' for true/false
+      var dc = forge.cipher.createDecipher('AES-CBC', k);
+      dc.start({iv: iv});
+      dc.update(forge.util.createBuffer(d));
+      var result = dc.finish(); // check 'result' for true/false
 
       if (!result) {
-        console.error('Wrong password');
+        window.location.replace('/not-found?p=1');
       }
-      console.log(decipher.output.toHex())
+
+      let ctx
+      try {
+        ctx = dc.output.toString()
+      } catch (err) {
+        window.location.replace('/not-found?p=2');
+      }
 
 
       function toggleReadmore() {
@@ -57,7 +65,7 @@
 
     </script>
 
-    {% include profile-footer.html %}
+    {% include footer.html %}
     
   </body>
 
