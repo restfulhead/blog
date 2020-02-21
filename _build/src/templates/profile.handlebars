@@ -38,9 +38,9 @@
         Certifications
       </h2>
       <ul class="list-unstyled">
-        {% for cert in profile.certifications %}
-        <li>{{ cert.title }}</li>
-        {% endfor %}
+        {{#each profile.certifications}}
+        <li>{{ title }}</li>
+        {{/each}}
       </ul>
 
       <h2>
@@ -48,9 +48,9 @@
         Education
       </h2>
       <ul class="list-unstyled">
-          {% for ed in profile.education %}
-          <li>{{ ed.title }} <br/><span class="subtle-sidebar">{{ ed.desc }}</span></li>
-          {% endfor %}
+          {{#each profile.education}}
+          <li>{{ title }} <br/><span class="subtle-sidebar">{{ desc }}</span></li>
+          {{/each}}
       </ul>
       
     </div>
@@ -62,9 +62,9 @@
       Skills
     </h2>
     <ul class="list-unstyled dense">
-      {% for skill in profile.skills %}
-      <li><span class="highlight">{{ skill.title }}</span> &mdash; {{skill.desc}}</li>
-      {% endfor %}
+      {{#each profile.skills}}
+      <li><span class="highlight">{{ title }}</span> &mdash; {{desc}}</li>
+      {{/each}}
     </ul>
 
     <h2>
@@ -72,14 +72,14 @@
       Professional Experience
     </h2>
 
-    {% for experience in profile.recentExperiences %}
-      {% include profile-experience.html %}
-    {% endfor %}
+    {{#each profile.recentExperiences}}
+      {{>profile-experience experience=.}}
+    {{/each}}
 
     <div id="read-more-content" class="hidden">
-      {% for experience in profile.moreExperiences %}
-        {% include profile-experience.html %}
-      {% endfor %}
+      {{#each profile.moreExperiences}}
+        {{>profile-experience experience=.}}
+      {{/each}}
     </div>
 
     <button id="read-more-button" class="light-button" onclick="toggleReadmore()">Show more...</button>
@@ -89,9 +89,9 @@
       Freelance and side projects
     </h2>
     <ul class="list-unstyled dense">
-      {% for freelance in profile.freelance %}
-      <li><span class="highlight">{{ freelance.title }}</span> &mdash; {{freelance.desc}}</li>
-      {% endfor %}
+      {{#each profile.freelance}}
+      <li><span class="highlight">{{ title }}</span> &mdash; {{desc}}</li>
+       {{/each}}
     </ul>
 
   </div>

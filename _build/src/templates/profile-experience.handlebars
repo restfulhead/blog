@@ -1,0 +1,14 @@
+<h3 class="dense">{{ title }} | {{ company }} | <span class="subtle-main">{{date}}</span></h3>
+<div class="list-styled dense">
+  <ul>
+    {{#each desc}}
+    <li>{{ title }}
+      <ul>
+        {{#each points}}
+        <li>{{ this }}</li>
+        {{/each}}
+      </ul>
+    </li>
+    {{/each}}
+  </ul>
+</div>
