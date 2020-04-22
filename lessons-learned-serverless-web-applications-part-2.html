@@ -248,6 +248,13 @@
 
 <p>These days there are a lot of CI solutions on the market. Our choice has been and still is: <a href="https://jenkins.io/">Jenkins</a>. That being said, the concepts described here should be translatable to other CI systems.</p>
 
+<p>We usually have the following types of jobs:</p>
+<ul>
+  <li>Shared infrastructure job that gets triggered manually and requires approval</li>
+  <li>Out automated application pipeline (see below)</li>
+  <li>A nightly job that cleans up resources of deleted branches and pull requests (Note to developers: Don’t forget to delete you remote branches after your feature is merged ;-))</li>
+</ul>
+
 <p>Jenkins is a very flexible, battle proven automation server that has continuously improved over the years. With an endless number of plugins and multiple ways to configure pipelines, it can be a bit confusing to new users. Here’s what works very well for us:</p>
 
 <h3 id="declarative-pipelines-and-pipeline-libraries">Declarative pipelines and pipeline libraries</h3>
