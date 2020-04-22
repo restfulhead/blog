@@ -1,8 +1,8 @@
 {
 	"version": 3,
-	"file": "main_v1.css",
+	"file": "main_v2.css",
 	"sources": [
-		"main_v1.scss",
+		"main_v2.scss",
 		"_sass/_base.scss",
 		"_sass/_layout.scss",
 		"_sass/_syntax-highlighting.scss"
