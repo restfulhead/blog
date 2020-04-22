@@ -94,18 +94,25 @@ For many applications, we deploy everything (infrastructure, front-end and back-
 
 The figure on the left shows (a slightly simplified version of) the different stages of our Serverless pipeline. It gets triggered automatically when a branch or pull request is created. Some stages may be skipped, depending what branch is being built.
 
-Test
+The setup step loads our configuration, as explained above. It may also do other initialization work such as loading secrets.
+
+We start by building and unit testing our back-end API. We also check dependencies for vulnerabilities and license issues. This is only triggered for pull requests or dev/stage/prod releases and to speed up builds for feature branches. If everything looks good the back-end API gets deployed. The deployment step deploys both, changes to infrastructure as well as application code. In the post deployment script we may run some data initialization/migration tasks. The API E2E tests verify that the API deployment was successful and did not break the critical path.
+
+The front-end invokes the back-end API and therefore it needs to know the base URL. This needs to be dynamically passed in from the previous build step, because each branch gets their own isolated environment (and thus its own URL). We perform similar steps to build, unit test and then deploy the front-end. A few E2E tests check that the site is not broken after the deployment.
+
+If everything looks good, we tag the release (only for master builds) and run some more static analysis. Static analysis could arguably done at an earlier stage and fail the build if they weren't successful. In practice the task can take a long time and we opted not to block us.
 
 ## Wrapping up
+Whew, this post became longer than I expected and I still feel there's a lot of info missing. I might update it in future. :) If you have feedback, questions or are missing some information, I would love to hear from you (via [Twitter @restfulhead](http://twitter.com/restfulhead) or see [contact](/contact)).
 
 ...
 
 
 [part1]: lessons-learned-serverless-web-applications-part-1
-[CloudFormation]: todo
-[Terraform]: todo
-[Jenkins]: todo
-[jenkins-pipeline-unit]: todo
+[CloudFormation]: https://aws.amazon.com/cloudformation/
+[Terraform]: https://www.terraform.io/
+[Jenkins]: https://jenkins.io/
+[jenkins-pipeline-unit]: https://github.com/jenkinsci/JenkinsPipelineUnit
 [declarative-pipelines]: https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline
 [vault]: https://www.vaultproject.io/
 [aws-secrets]: https://aws.amazon.com/secrets-manager/
