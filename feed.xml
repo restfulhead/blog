@@ -6,9 +6,35 @@
 </description>
     <link>http://ruhkopf.name/blog/</link>
     <atom:link href="http://ruhkopf.name/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 30 Dec 2019 22:56:07 -0500</pubDate>
-    <lastBuildDate>Mon, 30 Dec 2019 22:56:07 -0500</lastBuildDate>
+    <pubDate>Tue, 21 Apr 2020 23:33:08 -0400</pubDate>
+    <lastBuildDate>Tue, 21 Apr 2020 23:33:08 -0400</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
+    
+      <item>
+        <title>Lessons learned when building Serverless web applications - Part 2</title>
+        <description>&lt;p&gt;With Serverless we get rapid provisioning, automation and consumption based billing. This enables new development and release processes that are just not possible with traditional applications and infrastructure. Add to this a DevOps culture and the dream to build, test, and release software faster and more reliably becomes true. This part of the Serverless lessons learned series focusses on Continuous Delivery.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 21 Apr 2020 01:00:00 -0400</pubDate>
+        <link>http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2</link>
+        <guid isPermaLink="true">http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2</guid>
+        
+        <category>serverless</category>
+        
+        <category>faas</category>
+        
+        <category>api</category>
+        
+        <category>ci</category>
+        
+        <category>jenkins</category>
+        
+        <category>automation</category>
+        
+        <category>cloud</category>
+        
+        
+      </item>
     
       <item>
         <title>Lessons learned when building Serverless web applications - Part 1</title>

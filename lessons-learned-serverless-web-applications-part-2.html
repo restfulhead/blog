@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Lessons learned when building Serverless web applications - Part 2</title>
+  <meta name="description" content="With Serverless we get rapid provisioning, automation and consumption based billing. This enables new development and release processes that are just not pos...">
+
+  <link rel="stylesheet" href="/blog/css/vendor/cookieconsent.min.cd0d0b6e50ff01ff2f3a9a70d7cfb66a7c6cb9acf7a566325568be6d3bd31fc4.css">
+  <link rel="stylesheet" href="/blog/css/main_v1.css">
+  <link rel="canonical" href="http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2">
+  <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+
+  <script src="/blog/js/vendor/picturefill.min.js"></script>
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">Patrick Ruhkopf - Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          
+          <a class="page-link" href="/blog/contact/">Contact</a>
+          
+                    
+        
+          
+          
+                    
+        
+          
+          
+                    
+        
+          
+          
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+                    
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Lessons learned when building Serverless web applications - Part 2</h1>
+    <p class="post-meta"><time datetime="2020-04-21T01:00:00-04:00" itemprop="datePublished">Apr 21, 2020</time>
+    • <a href="tags/serverless">serverless</a>
+    
+    • <a href="tags/faas">faas</a>
+    
+    • <a href="tags/api">api</a>
+    
+    • <a href="tags/ci">ci</a>
+    
+    • <a href="tags/jenkins">jenkins</a>
+    
+    • <a href="tags/automation">automation</a>
+    
+    • <a href="tags/cloud">cloud</a>
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>With Serverless we get rapid provisioning, automation and consumption based billing. This enables new development and release processes that are just not possible with traditional applications and infrastructure. Add to this a DevOps culture and the dream to build, test, and release software faster and more reliably becomes true. This part of the Serverless lessons learned series focusses on Continuous Delivery.</p>
+
+<!--more-->
+
+<p>First, let’s take a look at how this new development process differs from the traditional model. Then I’m going to describe our setup and what worked well for us.</p>
+
+<p>Traditional development usually happens in a local environment, that is disconnected and often very different than the actual production environment. Depending on the size and complexity of the application, this could mean a long and tedious onboarding process for new developers. Containers are often used to simplify this, but even their setup and maintenance can become complex and may not resemble services used in production. Also this means infrastructure changes that developers perform in their local setup are not reflected on other environments. This leads to costly errors that are discovered very late in the process. You also typically have a limited number of dev and staging environments. I’ve actually seen people fight, because there were many parallel work-streams competing for these precious resources.</p>
+
+<p>Modern cloud infrastructure changes the game. We can now provision entirely new environments in minutes if not seconds and consumption based billing makes that feasible also from a financial point of view. With this approach, developers each have their own isolated cloud environment. Setting this up usually means running a single command. Developers can then code and test against the actual setup. And more so, with infrastructure as code, they can test modifications immediately. These modifications are then checked in into version control along with the regular application code. This means these changes can be code reviewed and released along with the application. Think about full-stack development not just for front-end and back-end code, but also for infrastructure code. Teams can now own and take responsibility for the entire stack. Changes for new features, which often impact every tier, can be developed, tested and rolled out together. This removes friction and overhead between dev and ops.</p>
+
+<p>Ok, enough of the benefits, let’s see how to make this happen. The rest of this article focusses mostly on automation of cloud resources and how to overcome specific challenges. This is an important part of in the journey towards Continuous Delivery, but there are certainly other parts that are just as important. For example, a modern development and release process requires a modern application. In <a href="lessons-learned-serverless-web-applications-part-1">part1</a>, I’ve shared some good practices to build a back-end for the cloud. And as always, besides technology, there are culture and mindset aspects, which are often much more challenging to change.</p>
+
+<h2 id="cloud-infrastructure">Cloud infrastructure</h2>
+
+<p>A typical cloud native application does not only consist of application code deployed in containers or as functions. You usually have much more cloud infrastructure to configure, such as databases, blob storage, CDNs, etc. For this, it’s a good idea to split up these resources into different stacks, instead of adding everything to a single stack. By stack, I mean an infrastructure template that can be rolled out, such as a <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a> template or a <a href="https://www.terraform.io/">Terraform</a> template.</p>
+
+<p>There are several reasons for using different stacks:</p>
+
+<ul>
+  <li>Some resources might be slow to provision (looking at you, <a href="https://aws.amazon.com/cloudfront/">CloudFront</a>, and at you <a href="https://azure.microsoft.com/en-us/services/api-management/">APIM</a>) or expensive (database instances)</li>
+  <li>Some parts of the infrastructure may require additional change management / reviews</li>
+  <li>You want those parts that change frequently (application code, functions, API changes, …) deployed as fast as possible and smaller templates help (also there may be some technical limitations regarding huge templates)</li>
+  <li>You will have dependencies between different resources (more on this below)</li>
+</ul>
+
+<p>Based on this, we typically see two different types of stacks:</p>
+
+<ol>
+  <li>Shared base infrastructure stacks, that provision expensive resources that are going to be shared</li>
+  <li>Functions along with their code, API mappings/routes and other cheap infrastructure deployed per developer, branch and/or pull request</li>
+</ol>
+
+<p>This was very abstract, let’s talk about an example. Note that the decision about what services to share depend on the cloud provider, the service and your requirements. Services that don’t offer consumption based billing or are slow to provision are good candidates for shared resources. Otherwise you’ll spend a lot of money and/or time when provisioning a new environment (per developer, branch and/or pull request). In general, however, you want to avoid sharing wherever possible, because you don’t get the testing/isolation benefits.</p>
+
+<p>For example we might decide to share a database and ElasticSearch cluster in our development environment. This will be our first stack. Rolling out changes to this stack can be a bit tricky, as they could potentially break your development environment. Shared stacks need to be carefully maintained (think about backwards compatibility, downtime, etc) and therefore deployment is usually done by a dedicated pipeline (not part of the app release pipeline).</p>
+
+<p>Now let’s look at the parts that we want to deploy automatically in an isolated environment. That’s of course your function code, your API Gateway routes (or maybe even the entire gateway, if feasible), blobs, database schemas and tables, Elastic Search indexes, static assets of the front-end, etc. All this is part of our app release pipeline that gets automatically triggered for every branch and/or pull request. Note that in this example we have shared the database cluster, but the database schema/tables are not. This may require some code changes to your application to work with schema/table prefixes based on build pipeline parameters.</p>
+
+<h2 id="continuous-integration">Continuous Integration</h2>
+
+<p>These days there are a lot of CI solutions on the market. Our choice has been and still is: <a href="https://jenkins.io/">Jenkins</a>. That being said, the concepts described here should be translatable to other CI systems.</p>
+
+<p>Jenkins is a very flexible, battle proven automation server that has continuously improved over the years. With an endless number of plugins and multiple ways to configure pipelines, it can be a bit confusing to new users. Here’s what works very well for us:</p>
+
+<h3 id="declarative-pipelines-and-pipeline-libraries">Declarative pipelines and pipeline libraries</h3>
+
+<p>We’ve been using version control, code reviews and automated testing for application code for decades and the benefits are clear. And more recently we also treat infrastructure as code the same way. You definitely want to follow the same pattern for your CI pipelines and related configuration. Often enough I’ve seen teams configure complex jobs with complex parameters directly by using the Jenkins UI. Then changes get tested in a trial and error fashion by running the job. Granted, when Jenkins first launched some 15 (!) years ago, that was the only option to configure things. A lot has changed since then.</p>
+
+<p>Pipeline libraries allow you to script your entire pipeline. Your build job then simply references a pipeline. The pipelines, stages and helper scripts can all live in a version controlled repository and your can then follow the same code review processes and standards as you already do for application code. With <a href="https://github.com/jenkinsci/JenkinsPipelineUnit">jenkins-pipeline-unit</a> you can even run automated tests, catching many (but unfortunately not all) bugs before running the job in Jenkins.</p>
+
+<p>I definitely recommend to build you pipeline mostly <a href="https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline">declaratively</a> and with tedious things implemented in helpers and custom stages. This makes it easier to understand what the pipeline does.</p>
+
+<h3 id="configuration-management">Configuration Management</h3>
+
+<p>Similar to how your pipeline is described as code, you also want this for your configuration of the build job. Avoid having a lot of build parameters and instead load most of your configuration from a code repository or dedicated service. This way changes to configuration are also versioned and code reviewed.</p>
+
+<p>We have most of our configuration in one or more configuration code repositories. This is another repository that does not contain application code. The JSON configuration files are located in directories following a specific hierarchy. The first step in all of our pipelines is to load the configuration based on a few parameters. Here’s what our <code class="highlighter-rouge">Jenkinsfile</code> of a multi-branch project looks like:</p>
+
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="nd">@Library</span><span class="o">(</span><span class="s1">'our-pipeline-library'</span><span class="o">)</span>
+<span class="kn">package</span> <span class="nn">jenkins.pipelines</span><span class="o">;</span>
+
+<span class="kt">def</span> <span class="n">myParams</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="s1">'CLIENT'</span><span class="o">:</span> <span class="s1">'...'</span><span class="o">,</span>
+  <span class="s1">'APP'</span><span class="o">:</span> <span class="s1">'...'</span><span class="o">,</span>
+  <span class="s1">'REGION'</span><span class="o">:</span> <span class="s1">'...'</span><span class="o">,</span>
+  <span class="s1">'ENVIRONMENT'</span><span class="o">:</span> <span class="s1">'...'</span>
+  <span class="s1">'STACK'</span><span class="o">:</span> <span class="s1">'...'</span><span class="o">,</span>
+<span class="o">]</span>
+
+<span class="n">withEnv</span><span class="o">(</span><span class="n">myParams</span><span class="o">.</span><span class="na">collect</span> <span class="o">{</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span> <span class="o">-&gt;</span> <span class="s2">"${key}=${value}"</span> <span class="o">})</span> <span class="o">{</span>
+  <span class="n">pipelineServerless</span><span class="o">()</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The parameters are not pipeline specific, they only describe how to load the configuration from the configuration repository. By using a hierarchy such as <code class="highlighter-rouge">client -&gt; app -&gt; region -&gt; environment -&gt; stack</code>, we can have some common configuration files at the top, and others overwriting specific values down at the individual stack.</p>
+
+<h3 id="secret-management">Secret Management</h3>
+
+<p>Just like we do not hard-code passwords in application code or configuration files, the configuration repository does not contain passwords either. Instead, we make use of Secret Management services, such as <a href="https://www.vaultproject.io/">Vault by HashiCorp</a>, <a href="https://aws.amazon.com/secrets-manager/">AWS Secrets Manager</a> and <a href="https://azure.microsoft.com/en-us/services/key-vault/">Azure Key Vault</a>. If a configuration value contains sensitive data, we add a reference to the record in the secret management solution instead. Our pipeline configuration helper then resolves the secrets accordingly. Here’s an example:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="nl">"appClientConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w"> </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ClientName"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"some client"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w"> </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ClientId"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ABCDEFG1234"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w"> </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ClientSecret"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"//vault/path/to/secret/value"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<h3 id="pipeline-steps">Pipeline Steps</h3>
+
+<p>For many applications, we deploy everything (infrastructure, front-end and back-end) together. As mentioned in the introduction, this is awesome, because features often require changes in all layers. This means there is a huge benefit to have a single pull request that contains all those changes.</p>
+
+<picture>
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/serverless-build-pipeline-225by1034-0a6a75.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/serverless-build-pipeline-225by1034-0a6a75.png" media="(min-width: 40em)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/serverless-build-pipeline-225by1034-0a6a75.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="http://ruhkopf.name/blog/assets/images/generated/serverless-build-pipeline-150by689-0a6a75.png" />
+    <img src="http://ruhkopf.name/blog/assets/images/generated/serverless-build-pipeline-150by689-0a6a75.png" class="picture-tiny-float-left" itemprop="image" alt="Serverless pipeline" />
+  </picture>
+
+<p>The figure on the left shows (a slightly simplified version of) the different stages of our Serverless pipeline. It gets triggered automatically when a branch or pull request is created. Some stages may be skipped, depending what branch is being built.</p>
+
+<p>The setup step loads our configuration, as explained above. It may also do other initialization work such as loading secrets.</p>
+
+<p>We start by building and unit testing our back-end API. We also check dependencies for vulnerabilities and license issues. If everything looks good the back-end API gets deployed. The deployment step deploys both, changes to infrastructure as well as application code. In the post deployment script, we may run some data initialization/migration tasks. The API E2E tests verify that the API deployment was successful and did not break the critical path.</p>
+
+<p>The front-end invokes the back-end API and therefore it needs to know the base URL. This needs to be dynamically passed in from the previous build step, because each branch gets their own isolated environment (and thus its own URL). We perform similar steps to build, unit test and then deploy the front-end. A few E2E tests check that the site is not broken after the deployment.</p>
+
+<p>If everything looks good, we tag the release (only for master builds) and run some more static analysis. Static analysis could arguably be done at an earlier stage and fail the build if it wasn’t successful. In practice the task can take a long time and we opted not to block us.</p>
+
+<h2 id="wrapping-up">Wrapping up</h2>
+<p>Whew, this post became longer than I expected and I still feel like there’s a lot of info missing. I might update it in future. :) If you have feedback, questions or are missing some information, I would love to hear from you (via <a href="http://twitter.com/restfulhead">Twitter @restfulhead</a> or see <a href="/contact">contact</a>).</p>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Patrick Ruhkopf - Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Patrick Ruhkopf - Blog</li>
+          <li>subscribe <a href="/blog/feed.xml">via RSS</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/restfulhead"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">restfulhead</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/restfulhead"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">restfulhead</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>My thoughts on programming, application design and (someday) photography. 
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45866113-2"></script>
+
+<script>
+  window['ga-disable-UA-45866113-2'] = true;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+</script>
+
+<script src="/blog/js/vendor/cookieconsent.min.c975ea3858dd8c7347d46343fb510ed236efbde6c0069cc6283eba7639d47e22a560c1391c6314247a0269e1380f93d31b662c4897fa770ab2514bd0bd2d2f68.js" data-cfasync="false"></script>
+<script src="/blog/js/vendor/main.min.29e9a6941852b54310054e8af97cdded108192255658c2026001bb5ac7723e3ec11674a57a00352cf21dec4c3805a7755ee6009e8d8ca7d0578cfa3fe882f188.js"></script>
+
+
+
+
+
+  </body>
+
+</html>

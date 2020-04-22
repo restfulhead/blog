@@ -21,3 +21,23 @@ To build and deploy
 
 Worflow future
 * Check out https://github.com/jekyll/jekyll-compose
+
+
+
+Offtopic, serverless pipeline:
+
+```
+graph TD
+
+Setup-->BB[Backend Build/Test]
+BB-->BA[Backend Audit/Dep check]
+BA-->BD[Backend Deploy]
+BD-->BP[Backend Post depl]
+BP-->BE[Backend API E2E tests]
+BE-->FB[Frontend Build/Test]
+FB-->FA[Frontend Audit/Dep check]
+FA-->FD[Frontend Deployment]
+FD-->FT[Frontend UI E2E Tests]
+FT-->AT[Auto Tag]
+AT-->QC[QC Analysis]
+```
