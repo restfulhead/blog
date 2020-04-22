@@ -44,6 +44,11 @@ Now let's look at the parts that we want to deploy automatically in an isolated 
 
 These days there are a lot of CI solutions on the market. Our choice has been and still is: [Jenkins][Jenkins]. That being said, the concepts described here should be translatable to other CI systems.
 
+We usually have the following types of jobs:
+  - Shared infrastructure job that gets triggered manually and requires approval
+  - Out automated application pipeline (see below)
+  - A nightly job that cleans up resources of deleted branches and pull requests (Note to developers: Don't forget to delete you remote branches after your feature is merged ;-))
+
 Jenkins is a very flexible, battle proven automation server that has continuously improved over the years. With an endless number of plugins and multiple ways to configure pipelines, it can be a bit confusing to new users. Here's what works very well for us:
 
 ### Declarative pipelines and pipeline libraries
