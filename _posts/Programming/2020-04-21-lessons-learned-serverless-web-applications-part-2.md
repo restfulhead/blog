@@ -2,7 +2,7 @@
 layout: post
 title: "Lessons learned when building Serverless web applications - Part 2"
 permalink: lessons-learned-serverless-web-applications-part-2
-date: 2019-12-30 00:00:00 -0500
+date: 2020-04-21 00:00:00 -0500
 tags: [serverless, faas, api, ci, jenkins, automation, cloud]
 excerpt_separator: <!--more-->
 ---
@@ -63,7 +63,7 @@ Similar to how your pipeline is described as code, you also want this for your c
 
 We have most of our configuration in one or more configuration code repositories. This is another repository that does not contain application code. The JSON configuration files are located in directories following a specific hierarchy. The first step in all of our pipelines is to load the configuration based on very few parameters. Here's what our `Jenkinsfile` of a multi-branch project looks like:
 
-```
+{% highlight groovy linenos %}
 @Library('our-pipeline-library')
 package jenkins.pipelines;
 
@@ -78,7 +78,7 @@ def myParams = [
 withEnv(myParams.collect { key, value -> "${key}=${value}" }) {
   pipelineServerless()
 }
-```
+{% endhighlight %}
 
 The parameters are not pipeline specific, they only describe how to load the configuration from the configuration repository. By using a hierarchy such as `client -> app -> region -> environment -> stack`, we can have some common configuration files at the top, and others overwriting specific values down to the individual stack.
 
@@ -88,36 +88,25 @@ Just like we do not hard-code passwords in application code or configuration fil
 
 ### Pipeline Steps
 
-For many applications, we deploy everything (infrastructure, front-end and back-end) together. As mentioned in the introduction, this is awesome, because features often require changes in all layers. This means there is a huge benefit to have a single pull request that contains all those changes. The following shows (a slightly simplified version of) the different stages of our Serverless pipeline. It gets triggered automatically when a branch or pull request is created. Some stages may be skipped, depending what branch is being built.
+For many applications, we deploy everything (infrastructure, front-end and back-end) together. As mentioned in the introduction, this is awesome, because features often require changes in all layers. This means there is a huge benefit to have a single pull request that contains all those changes. 
 
-{% picture small serverless-build-pipeline.png alt="Serverless pipeline" %}
+{% picture small serverless-build-pipeline.png alt="Serverless pipeline" class="picture-tiny-float-left" %}
 
-```
-graph TD
+The figure on the left shows (a slightly simplified version of) the different stages of our Serverless pipeline. It gets triggered automatically when a branch or pull request is created. Some stages may be skipped, depending what branch is being built.
 
-Setup-->BB[Backend Build/Test]
-BB-->BA[Backend Audit/Dep check]
-BA-->BD[Backend Deploy]
-BD-->BP[Backend Post depl]
-BP-->BE[Backend API E2E tests]
-BE-->FB[Frontend Build/Test]
-FB-->FA[Frontend Audit/Dep check]
-FA-->FD[Frontend Deployment]
-FD-->FT[Frontend UI E2E Tests]
-FT-->AT[Auto Tag]
-AT-->QC[QC Analysis]
-```
+Test
+
+## Wrapping up
+
+...
 
 
-
-
-[part1]: 2020-04-21-lessons-learned-serverless-web-applications-part-1
-CloudFormation
-Terraform
-Jenkins
-jenkins-pipeline-unit
-
+[part1]: lessons-learned-serverless-web-applications-part-1
+[CloudFormation]: todo
+[Terraform]: todo
+[Jenkins]: todo
+[jenkins-pipeline-unit]: todo
 [declarative-pipelines]: https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline
-[vault](https://www.vaultproject.io/)
-[aws-secrets](https://aws.amazon.com/secrets-manager/)
-[az-keyvault] https://azure.microsoft.com/en-us/services/key-vault/
+[vault]: https://www.vaultproject.io/
+[aws-secrets]: https://aws.amazon.com/secrets-manager/
+[az-keyvault]: https://azure.microsoft.com/en-us/services/key-vault/

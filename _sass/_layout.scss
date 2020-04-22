@@ -255,6 +255,16 @@
     }
 }
 
+.picture-tiny-float-left {
+    margin-right: 3em;
+    margin-bottom: 3em;
+    width: 150px;
+
+    @include media-query-min(40em) {
+        float: left;
+    }
+}
+
 .picture-small {
     width: 150px;
 
@@ -270,3 +280,4 @@
         width: 740px;
     }
 }
+
