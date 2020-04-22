@@ -4,10 +4,10 @@
     <title>Patrick Ruhkopf - Blog</title>
     <description>My thoughts on programming, application design and (someday) photography. 
 </description>
-    <link>http://ruhkopf.name/blog/</link>
-    <atom:link href="http://ruhkopf.name/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 21 Apr 2020 23:33:08 -0400</pubDate>
-    <lastBuildDate>Tue, 21 Apr 2020 23:33:08 -0400</lastBuildDate>
+    <link>https://ruhkopf.name/blog/</link>
+    <atom:link href="https://ruhkopf.name/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 21 Apr 2020 23:37:52 -0400</pubDate>
+    <lastBuildDate>Tue, 21 Apr 2020 23:37:52 -0400</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
     
       <item>
@@ -16,8 +16,8 @@
 
 </description>
         <pubDate>Tue, 21 Apr 2020 01:00:00 -0400</pubDate>
-        <link>http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2</guid>
+        <link>https://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-2</guid>
         
         <category>serverless</category>
         
@@ -41,8 +41,8 @@
         <description>&lt;p&gt;During the last couple of years my team has built different Serverless Web applications both on AWS and on Azure. In this series of posts, I would like to share a few lessons learned and patterns that have worked very well for us.&lt;/p&gt;
 </description>
         <pubDate>Mon, 30 Dec 2019 00:00:00 -0500</pubDate>
-        <link>http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-1</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-1</guid>
+        <link>https://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-1</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/lessons-learned-serverless-web-applications-part-1</guid>
         
         <category>serverless</category>
         
@@ -70,8 +70,8 @@
         <description>&lt;p&gt;In my first blog post on Arvato’s blog, I’m explaining how chatbots/virtual assistants can provide great value also in the corporate world. By using more automation and providing a seamless interface, processes become much more efficient. But that’s not all. Read the story here: &lt;a href=&quot;http://us.arvato.com/blog/how-virtual-assistants-can-help-your-team-with-automation/&quot;&gt;How virtual assistants can help your team with automation&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 12 Mar 2017 09:02:03 -0400</pubDate>
-        <link>http://ruhkopf.name/blog/chatbots_and_va_for_businesses</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/chatbots_and_va_for_businesses</guid>
+        <link>https://ruhkopf.name/blog/chatbots_and_va_for_businesses</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/chatbots_and_va_for_businesses</guid>
         
         <category>chatbot</category>
         
@@ -94,8 +94,8 @@
 
 </description>
         <pubDate>Tue, 30 Aug 2016 20:44:11 -0400</pubDate>
-        <link>http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws</guid>
+        <link>https://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws</guid>
         
         <category>chatbot</category>
         
@@ -129,8 +129,8 @@
         <description>&lt;p&gt;In addition to invoking &lt;a href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-lambda.html&quot;&gt;Lambda functions&lt;/a&gt; and other &lt;a href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/integrating-api-with-aws-services-s3.html&quot;&gt;AWS services such as S3&lt;/a&gt;, the &lt;a href=&quot;https://aws.amazon.com/api-gateway/&quot;&gt;API Gateway&lt;/a&gt; can also act as a &lt;a href=&quot;http://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-mappings.html&quot;&gt;proxy&lt;/a&gt; between the user and your http based service. For example if you already have a service based architecture you could integrate it with the gateway to maintain, monitor and secure a public API for your services. However, Amazon’s priorities seem to be on the former two integration methods, because when it comes to the details the HTTP proxy integration is quite painful at the moment. In this post I will highlight some of the pitfalls and provide workarounds.&lt;/p&gt;
 </description>
         <pubDate>Mon, 14 Mar 2016 22:14:32 -0400</pubDate>
-        <link>http://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround</guid>
+        <link>https://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/aws-api-gateway-http-proxy-lambda-workaround</guid>
         
         <category>aws</category>
         
@@ -167,8 +167,8 @@
 
 </description>
         <pubDate>Thu, 21 May 2015 20:17:44 -0400</pubDate>
-        <link>http://ruhkopf.name/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs</guid>
+        <link>https://ruhkopf.name/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/exposing-spring-actuator-endpoints-via-jersey-jax-rs</guid>
         
         <category>actuator</category>
         
@@ -203,8 +203,8 @@
 
 </description>
         <pubDate>Sun, 12 Apr 2015 13:58:10 -0400</pubDate>
-        <link>http://ruhkopf.name/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot</guid>
+        <link>https://ruhkopf.name/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/catch-all-error-handling-for-web-services-with-rxclient-and-spring-boot</guid>
         
         <category>error handler</category>
         
@@ -235,8 +235,8 @@
 
 </description>
         <pubDate>Mon, 12 Jan 2015 21:14:10 -0500</pubDate>
-        <link>http://ruhkopf.name/blog/inspect-http-requests-httpinspector</link>
-        <guid isPermaLink="true">http://ruhkopf.name/blog/inspect-http-requests-httpinspector</guid>
+        <link>https://ruhkopf.name/blog/inspect-http-requests-httpinspector</link>
+        <guid isPermaLink="true">https://ruhkopf.name/blog/inspect-http-requests-httpinspector</guid>
         
         <category>analyze</category>
         

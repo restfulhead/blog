@@ -11,8 +11,8 @@
 
   <link rel="stylesheet" href="/blog/css/vendor/cookieconsent.min.cd0d0b6e50ff01ff2f3a9a70d7cfb66a7c6cb9acf7a566325568be6d3bd31fc4.css">
   <link rel="stylesheet" href="/blog/css/main_v1.css">
-  <link rel="canonical" href="http://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws">
-  <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="http://ruhkopf.name/blog/feed.xml">
+  <link rel="canonical" href="https://ruhkopf.name/blog/smart-chatbot-with-claudiajs-watson-nlp-aws">
+  <link rel="alternate" type="application/rss+xml" title="Patrick Ruhkopf - Blog" href="https://ruhkopf.name/blog/feed.xml">
 
   <script src="/blog/js/vendor/picturefill.min.js"></script>
 
@@ -230,29 +230,29 @@
 <p>Your bot uses intends and examples to figure out the purpose of a user’s message. For our to-do list prototype, I built two intends: <code class="highlighter-rouge">#add-item</code> adds something to a list. <code class="highlighter-rouge">#undo</code> removes the last item from the list. Make sure to fill in a good amount if examples, because this is part of your bots training.</p>
 
 <picture>
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-600by480-1ccb54.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-300by240-1ccb54.png" media="(min-width: 40em)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-300by240-1ccb54.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-150by120-1ccb54.png" />
-    <img src="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-150by120-1ccb54.png" class="picture-small" itemprop="image" alt="Watson intends" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-600by480-1ccb54.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-300by240-1ccb54.png" media="(min-width: 40em)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-300by240-1ccb54.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-150by120-1ccb54.png" />
+    <img src="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-intends-150by120-1ccb54.png" class="picture-small" itemprop="image" alt="Watson intends" />
   </picture>
 
 <picture>
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-600by480-b4da8c.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-300by240-b4da8c.png" media="(min-width: 40em)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-300by240-b4da8c.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-150by120-b4da8c.png" />
-    <img src="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-150by120-b4da8c.png" class="picture-small" itemprop="image" alt="Watson entities" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-600by480-b4da8c.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-300by240-b4da8c.png" media="(min-width: 40em)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-300by240-b4da8c.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-150by120-b4da8c.png" />
+    <img src="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-entities-150by120-b4da8c.png" class="picture-small" itemprop="image" alt="Watson entities" />
   </picture>
 
 <p>Finally, the dialog setup helps Watson to understand a typical conversation flow. The <code class="highlighter-rouge">conversation_start</code> node allows us to specify a welcome message. The <code class="highlighter-rouge">#add-item</code> node gets triggered when Watson thinks that the user’s intend is to add an item. If that’s the case, then we let Watson further interpret the user input to either add something to the shopping list, the calendar or a general to-do list. In case the user changed their mind, we add the <code class="highlighter-rouge">#undo</code> node. Finally, when all else fails and Watson can’t interpret the intend, the <code class="highlighter-rouge">Anything else</code> node is invoked.</p>
 
 <picture>
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-1480by838-ff7bd4.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-740by419-ff7bd4.png" media="(min-width: 40em)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-740by419-ff7bd4.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
-    <source srcset="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-370by209-ff7bd4.png" />
-    <img src="http://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-370by209-ff7bd4.png" class="picture-big" itemprop="image" alt="Watson dialog" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-1480by838-ff7bd4.png" media="(min-width: 40em) and (-webkit-min-device-pixel-ratio: 2), (min-width: 40em) and (min-resolution: 192dpi)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-740by419-ff7bd4.png" media="(min-width: 40em)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-740by419-ff7bd4.png" media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)" />
+    <source srcset="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-370by209-ff7bd4.png" />
+    <img src="https://ruhkopf.name/blog/assets/images/generated/chatbot-watson-dialog-370by209-ff7bd4.png" class="picture-big" itemprop="image" alt="Watson dialog" />
   </picture>
 
 <p>When you click the little message box in the dialog view, a chat window opens. You can test and train your bot from there and see how Watson identifies your input. If Watson’s interpretation of you message is wrong, you can provide it with the correct intend. This way your bot can learn and improve.</p>
