@@ -19,7 +19,7 @@ Our Serverless application usually consists of the following components:
 - Authentication with OAuth 2 and JSON Web Tokens
 - Content Management Service: To maintain and serve content
 
-You are reading part 1 of this series, where I'm going to focus on the back-end.
+You are reading part 1 of this series, where I'm going to focus on the back-end. [Part 2](2020-04-21-lessons-learned-serverless-web-applications-part-2) is now available, too.
 
 ### Choosing one language
 Many articles about Microservices and Serverless promote the fact that you can use different programming languages to implement APIs. This is a double-edged sword. On the one hand it gives you flexibility to use the right tool for the job. It's also great, if you already have many diverse teams. On the other hand, keep in mind that the more languages you introduce, the more effort you will have to address common concerns, differences in runtime behavior and configuration format, etc.
